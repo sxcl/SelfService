@@ -1,12 +1,21 @@
 ﻿using System.IO;
+using System.Reflection;
+using Autofac;
+using log4net;
+using log4net.Config;
+using log4net.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.IdentityModel.Logging;
+using SelfServiceMachine.Filter;
+using SelfServiceMachine.Log;
 using SelfServiceMachine.SwaggerHelp;
 using Swashbuckle.AspNetCore.Swagger;
+using LogHelper = SelfServiceMachine.Log.LogHelper;
 
 namespace SelfServiceMachine
 {
@@ -16,12 +25,23 @@ namespace SelfServiceMachine
     public class Startup
     {
         /// <summary>
+        /// log4net 仓储库
+        /// </summary>
+        public static ILoggerRepository repository { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            //log4net
+            repository = LogManager.CreateRepository("SelfServiceMachine");//需要获取日志的仓库名，也就是你的当然项目名
+
+            //指定配置文件
+            XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));//配置文件
         }
 
         /// <summary>
@@ -74,6 +94,15 @@ namespace SelfServiceMachine
                     policy.WithOrigins("http://localhost:8083").WithMethods("GET", "POST", "PUT", "DELETE").WithHeaders("authorization");
                 });
             });
+            #endregion
+
+            #region log日志注入
+            services.AddSingleton<ILoggerHelper, LogHelper>();
+
+            services.AddMvc(o =>
+            {
+                o.Filters.Add(typeof(GlobalExceptionFilter));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             #endregion
         }
 
