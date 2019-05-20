@@ -3,7 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfServiceMachine", "SelfServiceMachine\SelfServiceMachine.csproj", "{DA09F5D8-E540-4CEA-8F92-CD3EEEA2571C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfServiceMachine", "SelfServiceMachine\SelfServiceMachine.csproj", "{DA09F5D8-E540-4CEA-8F92-CD3EEEA2571C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfServiceMachine.Service", "SelfServiceMachine.Service\SelfServiceMachine.Service.csproj", "{D0A9E884-A1D1-4542-B045-4C76BA1ABE9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfServiceMachine.Model", "SelfServiceMachine.Model\SelfServiceMachine.Model.csproj", "{5C82DA2A-9EA7-428B-8C95-171074EFC307}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{D1FA9FA1-D58B-45BF-82E9-30BD261B846D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SelfServiceMachine.Bussiness", "SelfServiceMachine.Bussiness\SelfServiceMachine.Bussiness.csproj", "{009DA6E3-A7EC-4205-A3F9-599CBE3BDBBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfServiceMachine.Entity", "SelfServiceMachine.Entity\SelfServiceMachine.Entity.csproj", "{861A1F0E-057C-4985-A023-46AEA1F26C40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfServiceMachine.Common", "SelfServiceMachine.Common\SelfServiceMachine.Common.csproj", "{210CC0B8-31B6-4A52-98D4-8E0B88AF6EDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +27,30 @@ Global
 		{DA09F5D8-E540-4CEA-8F92-CD3EEEA2571C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA09F5D8-E540-4CEA-8F92-CD3EEEA2571C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA09F5D8-E540-4CEA-8F92-CD3EEEA2571C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0A9E884-A1D1-4542-B045-4C76BA1ABE9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0A9E884-A1D1-4542-B045-4C76BA1ABE9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0A9E884-A1D1-4542-B045-4C76BA1ABE9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0A9E884-A1D1-4542-B045-4C76BA1ABE9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C82DA2A-9EA7-428B-8C95-171074EFC307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C82DA2A-9EA7-428B-8C95-171074EFC307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C82DA2A-9EA7-428B-8C95-171074EFC307}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C82DA2A-9EA7-428B-8C95-171074EFC307}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1FA9FA1-D58B-45BF-82E9-30BD261B846D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1FA9FA1-D58B-45BF-82E9-30BD261B846D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1FA9FA1-D58B-45BF-82E9-30BD261B846D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1FA9FA1-D58B-45BF-82E9-30BD261B846D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{009DA6E3-A7EC-4205-A3F9-599CBE3BDBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{009DA6E3-A7EC-4205-A3F9-599CBE3BDBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{009DA6E3-A7EC-4205-A3F9-599CBE3BDBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{009DA6E3-A7EC-4205-A3F9-599CBE3BDBBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{861A1F0E-057C-4985-A023-46AEA1F26C40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{861A1F0E-057C-4985-A023-46AEA1F26C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{861A1F0E-057C-4985-A023-46AEA1F26C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{861A1F0E-057C-4985-A023-46AEA1F26C40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{210CC0B8-31B6-4A52-98D4-8E0B88AF6EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{210CC0B8-31B6-4A52-98D4-8E0B88AF6EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{210CC0B8-31B6-4A52-98D4-8E0B88AF6EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{210CC0B8-31B6-4A52-98D4-8E0B88AF6EDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

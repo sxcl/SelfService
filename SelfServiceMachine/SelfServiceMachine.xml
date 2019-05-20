@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SelfServiceMachine</name>
+    </assembly>
+    <members>
+        <member name="T:SelfServiceMachine.Controllers.ValuesController">
+            <summary>
+            测试控制器
+            </summary>
+        </member>
+        <member name="M:SelfServiceMachine.Controllers.ValuesController.Get">
+            <summary>
+            Get
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SelfServiceMachine.Controllers.ValuesController.Get(System.Int32)">
+            <summary>
+            GetById
+            </summary>
+            <param name="id">主键</param>
+            <returns></returns>
+        </member>
+        <member name="M:SelfServiceMachine.Controllers.ValuesController.Post(System.String)">
+            <summary>
+            Post
+            </summary>
+            <param name="value">value</param>
+        </member>
+        <member name="M:SelfServiceMachine.Controllers.ValuesController.Put(System.Int32,System.String)">
+            <summary>
+            Put
+            </summary>
+            <param name="id">主键</param>
+            <param name="value">value</param>
+        </member>
+        <member name="M:SelfServiceMachine.Controllers.ValuesController.Delete(System.Int32)">
+            <summary>
+            Delete
+            </summary>
+            <param name="id">主键</param>
+        </member>
+        <member name="T:SelfServiceMachine.Program">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SelfServiceMachine.Program.Main(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:SelfServiceMachine.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SelfServiceMachine.Startup">
+            <summary>
+            启动类
+            </summary>
+        </member>
+        <member name="M:SelfServiceMachine.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="P:SelfServiceMachine.Startup.Configuration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SelfServiceMachine.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:SelfServiceMachine.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+        <member name="T:SelfServiceMachine.SwaggerHelp.SwaggerDocTag">
+            <summary>
+            Swagger注释帮助类
+            </summary>
+        </member>
+        <member name="M:SelfServiceMachine.SwaggerHelp.SwaggerDocTag.Apply(Swashbuckle.AspNetCore.Swagger.SwaggerDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
+            <summary>
+            添加附加注释
+            </summary>
+            <param name="swaggerDoc"></param>
+            <param name="context"></param>
+        </member>
+    </members>
+</doc>
