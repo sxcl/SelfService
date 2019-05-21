@@ -12,6 +12,7 @@ namespace SelfServiceMachine.Service.Service
     {
         public SimpleClient<pt_info> pdb = new SimpleClient<pt_info>(BaseDB.GetClient());
         #region base
+
         public bool Add(pt_info entity)
         {
             return pdb.Insert(entity);
@@ -25,6 +26,16 @@ namespace SelfServiceMachine.Service.Service
         public pt_info Get(long id)
         {
             return pdb.GetById(id);
+        }
+
+        public pt_info Get(Expression<Func<pt_info, bool>> whereLambda)
+        {
+            return pdb.GetSingle(whereLambda);
+        }
+
+        public List<pt_info> GetList(Expression<Func<pt_info, bool>> whereLambda)
+        {
+            return pdb.GetList(whereLambda);
         }
 
         public TableModel<pt_info> GetPageList(int pageIndex, int pageSize)

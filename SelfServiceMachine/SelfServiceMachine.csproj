@@ -24,6 +24,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SelfServiceMachine.Bussiness\SelfServiceMachine.Bussiness.csproj" />
+    <ProjectReference Include="..\SelfServiceMachine.Common\SelfServiceMachine.Common.csproj" />
+    <ProjectReference Include="..\SelfServiceMachine.Entity\SelfServiceMachine.Entity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Request\" />
   </ItemGroup>
 
 </Project>
