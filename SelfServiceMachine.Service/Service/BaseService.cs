@@ -69,6 +69,16 @@ namespace SelfServiceMachine.Service.Service
             return sdb.GetById<T>(id);
         }
 
+        public T Get(Expression<Func<T, bool>> whereLambda)
+        {
+            return sdb.GetById<T>(whereLambda);
+        }
+
+        public List<T> GetList(Expression<Func<T, bool>> whereLambda)
+        {
+            return sdb.GetList<T>(whereLambda);
+        }
+
         public bool Add(T entity)
         {
             return sdb.Insert(entity);

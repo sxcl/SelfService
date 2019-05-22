@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SelfServiceMachine.Common\SelfServiceMachine.Common.csproj" />
     <ProjectReference Include="..\SelfServiceMachine.Entity\SelfServiceMachine.Entity.csproj" />
     <ProjectReference Include="..\SelfServiceMachine.Model\SelfServiceMachine.Model.csproj" />
     <ProjectReference Include="..\SelfServiceMachine.Service\SelfServiceMachine.Service.csproj" />

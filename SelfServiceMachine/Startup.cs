@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using System.Reflection;
-using Autofac;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
@@ -10,12 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.IdentityModel.Logging;
 using SelfServiceMachine.Filter;
-using SelfServiceMachine.Log;
+using SelfServiceMachine.Logger;
 using SelfServiceMachine.SwaggerHelp;
 using Swashbuckle.AspNetCore.Swagger;
-using LogHelper = SelfServiceMachine.Log.LogHelper;
 
 namespace SelfServiceMachine
 {
@@ -97,11 +93,11 @@ namespace SelfServiceMachine
             #endregion
 
             #region log日志注入
-            services.AddSingleton<ILoggerHelper, LogHelper>();
+            services.AddSingleton<ILoggerHelper, LoggerHelper>();
 
             services.AddMvc(o =>
             {
-                o.Filters.Add(typeof(GlobalExceptionFilter));
+                o.Filters.Add(typeof(GlobalExceptionsFilter));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             #endregion
         }
