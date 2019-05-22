@@ -66,5 +66,39 @@
             }
         }
 
+        /// <summary>
+        /// 根据id获取cardType
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GetCardTypeByType(int cardType)
+        {
+            var para = "";
+            switch (cardType)
+            {
+                case 1:
+                    para = "cno";
+                    break;
+                case 2:
+                    para = "yno";
+                    break;
+                case 3:
+                    para = "ybidentity";
+                    break;
+                case 5:
+                    para = "idno";
+                    break;
+                case 7:
+                    para = "mzno";
+                    break;
+                case 10:
+                    para = "tel";
+                    break;
+                default:
+                    para = "cno";
+                    break;
+            }
+            return para;
+        }
     }
 }

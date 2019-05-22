@@ -2,7 +2,9 @@
 using SelfServiceMachine.Model;
 using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SelfServiceMachine.Bussiness
 {
@@ -39,6 +41,11 @@ namespace SelfServiceMachine.Bussiness
                     break;
             }
             return pt_Info;
+        }
+
+        public pt_info GetPt_Info(Expression<Func<pt_info,bool>> whereLambda)
+        {
+            return IPtInfo.Get(whereLambda);
         }
 
         public pt_info GetInfoByCard(string PatId,string PatName)

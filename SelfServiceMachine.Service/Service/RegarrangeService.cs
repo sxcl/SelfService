@@ -4,6 +4,7 @@ using SelfServiceMachine.Service.IService;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SelfServiceMachine.Service.Service
@@ -30,6 +31,13 @@ namespace SelfServiceMachine.Service.Service
                 new SugarParameter("@doctor",doctor),
                 new SugarParameter("@itemid",itemid)
             });
+        }
+
+        public reg_arrange GetReg_arrange(string dept, string doctor)
+        {
+            var query = "select top 1 ra.* from reg_arrange ra where ra.booktime1 >= '06:00:00' and ra.booktime2 <= '12:00:00' and DATEDIFF(DAY,ra.addtime,GETDATE()) = 0 and dept = @dept and doctor = @doctor and regno is null";
+
+            return db.Ado.SqlQuery<reg_arrange>(query, new SugarParameter[] { new SugarParameter("@dept", dept), new SugarParameter("@doctor", doctor) }).FirstOrDefault();
         }
     }
 }

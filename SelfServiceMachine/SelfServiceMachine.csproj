@@ -8,7 +8,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netcoreapp2.2\APIHelp.xml</DocumentationFile>
     <OutputPath>bin\Debug\netcoreapp2.2\</OutputPath>
+    <Prefer32Bit>true</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <COMReference Include="SSCARDDRIVEROCXLib.dll">
+      <Guid>66f926da-b665-493d-829b-d1d9e9b405cd</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>false</Isolated>
+    </COMReference>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
