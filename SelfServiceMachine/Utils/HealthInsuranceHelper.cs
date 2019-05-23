@@ -1,10 +1,21 @@
-﻿using SSCARDDRIVEROCXLib;
-using System;
+﻿using System;
 
 namespace SelfServiceMachine.Utils
 {
+    /// <summary>
+    /// 医保帮助类
+    /// </summary>
     public class HealthInsuranceHelper
     {
+        /// <summary>
+        /// 试算
+        /// </summary>
+        /// <param name="transType"></param>
+        /// <param name="transVersion"></param>
+        /// <param name="verifyCode"></param>
+        /// <param name="serNum"></param>
+        /// <param name="transBody"></param>
+        /// <returns></returns>
         public static string Trial(string transType, string transVersion, string verifyCode, string serNum, object transBody)
         {
             var serialNumber = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + serNum;
@@ -28,39 +39,6 @@ namespace SelfServiceMachine.Utils
                 extendUserId = null,
                 extendSerialNumber = null
             };
-            return null;
-        }
-
-        /// <summary>
-        /// 获取交易验证码和版本号（无卡）
-        /// </summary>
-        /// <param name="inParams">执行本函数时交易信息，包括：交易类型|交易流水号|医药机构编码|</param>
-        /// <returns></returns>
-        public static string GetVcode(string inParams)
-        {
-            if (!string.IsNullOrEmpty(inParams))
-            {
-                string outResult = "";
-                try
-                {
-                    SSCARD szCard = new SSCARD();
-                    var result = szCard.iVerifyCode(inParams);
-                    if (result.ToString().Trim().Equals("0"))
-                    {
-                        outResult = szCard.pOutInfo;
-                    }
-                    else
-                    {
-                        outResult = result.ToString();
-                    }
-                }
-                catch (Exception error)
-                {
-                    outResult = $"获取验证码失败！{error}";
-                    throw;
-                }
-                return outResult;
-            }
             return null;
         }
     }
