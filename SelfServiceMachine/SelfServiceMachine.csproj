@@ -13,17 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <COMReference Include="SSCARDDRIVEROCXLib.dll">
-      <Guid>66f926da-b665-493d-829b-d1d9e9b405cd</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>false</Isolated>
-    </COMReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
