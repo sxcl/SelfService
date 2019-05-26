@@ -6,6 +6,6 @@ namespace SelfServiceMachine.Service.IService
 {
     public interface ISysDept:IBase<sys_dept>
     {
-        List<GDeptItem> GetGDeptItems(string fCode);
+        List<Entity.SResponse.GDeptItem> GetGDeptItems(string fCode);
     }
 }

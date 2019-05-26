@@ -1,5 +1,8 @@
-﻿namespace SelfServiceMachine.Entity.SlefServiceModels
+﻿using System.Xml.Serialization;
+
+namespace SelfServiceMachine.Entity.SlefServiceModels
 {
+    [XmlRoot("request")]
     public class CreateACard
     {
         public string branchCode { get; set; }

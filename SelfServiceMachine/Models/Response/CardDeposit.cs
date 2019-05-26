@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace SelfServiceMachine.Models.Response
 {
+    [XmlRoot("Response")]
     public class CardDeposit
     {
         public int resultCode { get; set; }

@@ -31,7 +31,7 @@ namespace SelfServiceMachine.Bussiness
                     {
                         return pt_Info;
                     }
-                    pt_Info = IPtInfo.GetList(x => x.idno == patCardNo).OrderByDescending(x => x.addtime).FirstOrDefault();
+                    pt_Info = IPtInfo.Get(patCardNo);
                     break;
                 case 10:
                     pt_Info = IPtInfo.Get(x => x.tel == patCardNo);
@@ -50,7 +50,7 @@ namespace SelfServiceMachine.Bussiness
 
         public pt_info GetInfoByCard(string PatId,string PatName)
         {
-            return IPtInfo.GetList(x => x.idno == PatId && x.pname == PatName).OrderByDescending(x => x.addtime).FirstOrDefault();
+            return IPtInfo.Get(x => x.idno == PatId);
         }
 
         public bool BindCard(string idno, string cno, string pname)

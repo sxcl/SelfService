@@ -13,6 +13,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="log\**" />
+    <Content Remove="log\**" />
+    <EmbeddedResource Remove="log\**" />
+    <None Remove="log\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\AdminController.cs" />
+    <Compile Remove="Controllers\OrderinfoController.cs" />
+    <Compile Remove="Controllers\PatientBasicInfoController.cs" />
+    <Compile Remove="Controllers\ValuesController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -28,10 +42,6 @@
     <ProjectReference Include="..\SelfServiceMachine.Bussiness\SelfServiceMachine.Bussiness.csproj" />
     <ProjectReference Include="..\SelfServiceMachine.Common\SelfServiceMachine.Common.csproj" />
     <ProjectReference Include="..\SelfServiceMachine.Entity\SelfServiceMachine.Entity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Request\" />
   </ItemGroup>
 
 </Project>

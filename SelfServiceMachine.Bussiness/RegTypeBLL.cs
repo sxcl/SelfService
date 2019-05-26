@@ -11,7 +11,7 @@ namespace SelfServiceMachine.Bussiness
     {
         private IRegType IRegType = new RegTypeService();
 
-        public List<AdogCurRegItem> gCurRegInfos(string deptCode, string doctorCode, string beginDate, string endDate)
+        public List<Entity.SResponse.AdogCurRegItem> gCurRegInfos(string deptCode, string doctorCode, string beginDate, string endDate)
         {
             return IRegType.gCurRegInfos(deptCode, doctorCode, beginDate, endDate);
         }

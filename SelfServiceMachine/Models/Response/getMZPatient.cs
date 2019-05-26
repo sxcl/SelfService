@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace SelfServiceMachine.Models.Response
 {
     /// <summary>
     /// 
     /// </summary>
+    [XmlRoot("Response")]
     public class getMZPatient
     {
         public int resultCode { get; set; }

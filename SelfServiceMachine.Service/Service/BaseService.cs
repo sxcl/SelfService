@@ -66,17 +66,17 @@ namespace SelfServiceMachine.Service.Service
 
         public T Get(long id)
         {
-            return sdb.GetById<T>(id);
+            return db.Queryable<T>().InSingle(id);
         }
 
         public T Get(Expression<Func<T, bool>> whereLambda)
         {
-            return sdb.GetById<T>(whereLambda);
+            return db.Queryable<T>().Where(whereLambda).First();
         }
 
         public List<T> GetList(Expression<Func<T, bool>> whereLambda)
         {
-            return sdb.GetList<T>(whereLambda);
+            return db.Queryable<T>().Where(whereLambda).ToList();
         }
 
         public bool Add(T entity)

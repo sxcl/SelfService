@@ -8,7 +8,7 @@ namespace SelfServiceMachine.Utils
     public class HealthInsuranceHelper
     {
         /// <summary>
-        /// 试算
+        /// 挂号试算
         /// </summary>
         /// <param name="transType"></param>
         /// <param name="transVersion"></param>

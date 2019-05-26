@@ -1,4 +1,6 @@
-﻿using SelfServiceMachine.Service.IService;
+﻿using SelfServiceMachine.Entity;
+using SelfServiceMachine.Entity.Insurance;
+using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
 using System;
 using System.Collections.Generic;
@@ -42,6 +44,16 @@ namespace SelfServiceMachine.Bussiness
                 amount = amountcol,
                 del = false
             });
+        }
+
+        public fee_info GetFee_Info(int feeid)
+        {
+            return iFeeinfo.GetFee_InfoByRegTrial(feeid);
+        }
+
+        public MZ001 GetTrialData(int regid)
+        {
+            return iFeeinfo.GetTrialData(regid);
         }
     }
 }

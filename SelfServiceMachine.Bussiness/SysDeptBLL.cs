@@ -12,7 +12,7 @@ namespace SelfServiceMachine.Bussiness
     {
         private ISysDept iDept = new SysdeptService();
 
-        public List<GDeptItem> GetGDeptItems(string fCode)
+        public List<Entity.SResponse.GDeptItem> GetGDeptItems(string fCode)
         {
             return iDept.GetGDeptItems(fCode);
         }

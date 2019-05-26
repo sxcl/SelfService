@@ -12,7 +12,7 @@ using SelfServiceMachine.Models.Response;
 namespace SelfServiceMachine.Controllers
 {
     /// <summary>
-    /// 诊疗付款
+    /// 诊疗付费
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]

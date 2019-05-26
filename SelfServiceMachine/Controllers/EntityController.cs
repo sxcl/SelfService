@@ -11,8 +11,8 @@ namespace SelfServiceMachine.Controllers
     /// <summary>
     /// 实体操作模块
     /// </summary>
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    //[Produces("application/json")]
+    //[Route("api/[controller]")]
     public class EntityController : Controller
     {
         private EntityBLL bll = new EntityBLL();

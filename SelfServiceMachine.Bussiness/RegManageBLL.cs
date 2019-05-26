@@ -9,7 +9,7 @@ namespace SelfServiceMachine.Bussiness
     {
         private IRegmanage IRegmanage = new RegManageService();
 
-        public List<cDocTimeItem> GetCDocTimeItems(string deptCode, string doctorCode, int Timeflag)
+        public List<Entity.SResponse.cDocTimeItem> GetCDocTimeItems(string deptCode, string doctorCode, int Timeflag)
         {
             return IRegmanage.GetCDocTimeItems(deptCode, doctorCode, Timeflag);
         }

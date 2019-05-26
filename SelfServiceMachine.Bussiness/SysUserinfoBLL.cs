@@ -11,7 +11,7 @@ namespace SelfServiceMachine.Bussiness
     {
         private ISysUserinfo IUserinfo = new SysUserinfoService();
 
-        public List<rDoctorItem> GetRDoctorItems(string deptCode)
+        public List<SelfServiceMachine.Entity.SResponse.rDoctorItem> GetRDoctorItems(string deptCode)
         {
             return IUserinfo.GetRDoctorItems(deptCode);
         }

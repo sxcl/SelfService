@@ -27,6 +27,12 @@ namespace SelfServiceMachine.Service.IService
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        pt_info Get(string idno);
+        /// <summary>
+        /// 获取单个
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         pt_info Get(Expression<Func<pt_info, bool>> whereLambda);
         /// <summary>
         /// 获取单个

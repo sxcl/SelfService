@@ -1,4 +1,6 @@
-﻿namespace SelfServiceMachine.Entity.SlefServiceModels
+﻿using System.Xml.Serialization;
+
+namespace SelfServiceMachine.Entity.SlefServiceModels
 {
     public class GetMZPatient
     {

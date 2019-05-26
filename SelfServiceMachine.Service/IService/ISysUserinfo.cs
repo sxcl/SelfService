@@ -6,6 +6,6 @@ namespace SelfServiceMachine.Service.IService
 {
     public interface ISysUserinfo : IBase<sys_userinfo>
     {
-        List<rDoctorItem> GetRDoctorItems(string deptCode);
+        List<SelfServiceMachine.Entity.SResponse.rDoctorItem> GetRDoctorItems(string deptCode);
     }
 }

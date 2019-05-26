@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Xml.Serialization;
 
 namespace SelfServiceMachine.Entity.SlefServiceModels
 {
+    [XmlRoot("request")]
     public class BindCard
     {
         public string branchCode { get; set; }

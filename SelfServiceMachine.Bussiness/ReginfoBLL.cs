@@ -121,5 +121,10 @@ namespace SelfServiceMachine.Bussiness
 
             return reg_Info;
         }
+
+        public reg_info GetReg_Info(int regid)
+        {
+            return iReginfo.Get(regid);
+        }
     }
 }

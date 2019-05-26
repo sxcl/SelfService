@@ -1,0 +1,26 @@
+﻿using SelfServiceMachine.Common;
+using SelfServiceMachine.Models.Response;
+
+namespace SelfServiceMachine.Utils
+{
+    public class RsXmlHelper
+    {
+        /// <summary>
+        /// 只返回状态码和消息
+        /// </summary>
+        /// <param name="resCode"></param>
+        /// <param name="resResult"></param>
+        /// <returns></returns>
+        public static string ResXml(int resCode, string resResult)
+        {
+            return XMLHelper.XmlSerialize(new response<rsBaseModel>()
+            {
+                model = new rsBaseModel()
+                {
+                    resultCode = resCode,
+                    resultMessage = resResult
+                }
+            });
+        }
+    }
+}

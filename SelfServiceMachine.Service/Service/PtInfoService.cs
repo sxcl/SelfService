@@ -4,11 +4,12 @@ using SelfServiceMachine.Service.IService;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace SelfServiceMachine.Service.Service
 {
-    public class PtInfoService : BaseDB, IPtInfo
+    public class PtInfoService : BaseService<pt_info>, IPtInfo
     {
         public SimpleClient<pt_info> pdb = new SimpleClient<pt_info>(BaseDB.GetClient());
         #region base
@@ -31,6 +32,12 @@ namespace SelfServiceMachine.Service.Service
         public pt_info Get(Expression<Func<pt_info, bool>> whereLambda)
         {
             return pdb.GetSingle(whereLambda);
+        }
+
+        public pt_info Get(string idno)
+        {
+            var query = "select * from pt_info where idno = @idno";
+            return db.Ado.SqlQuerySingle<pt_info>(query, new { idno });
         }
 
         public List<pt_info> GetList(Expression<Func<pt_info, bool>> whereLambda)
@@ -56,7 +63,7 @@ namespace SelfServiceMachine.Service.Service
         public bool Update(pt_info entity)
         {
             return pdb.Update(entity);
-        } 
+        }
         #endregion
     }
 }

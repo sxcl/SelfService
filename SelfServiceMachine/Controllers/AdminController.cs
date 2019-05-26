@@ -6,8 +6,8 @@ namespace SelfServiceMachine.Controllers
     /// <summary>
     /// 管理员控制器
     /// </summary>
-    [Route("api/[controller]")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[ApiController]
     public class AdminController : ControllerBase
     {
 

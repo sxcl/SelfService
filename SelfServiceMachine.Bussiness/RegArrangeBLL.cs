@@ -10,14 +10,14 @@ namespace SelfServiceMachine.Bussiness
     {
         private IRegarrange Iregarrange = new RegarrangeService();
 
-        public List<Entity.SlefServiceModels.DeptRegItem> GetDeptRegItems(string dept, string beginDate, string endDate)
+        public List<Entity.SResponse.DeptRegItem> GetDeptRegItems(string dept, string beginDate, string endDate)
         {
             var list = Iregarrange.GetReg_arrange(dept, beginDate, endDate);
 
-            List<Entity.SlefServiceModels.DeptRegItem> deptRegItems = new List<Entity.SlefServiceModels.DeptRegItem>();
+            List<Entity.SResponse.DeptRegItem> deptRegItems = new List<Entity.SResponse.DeptRegItem>();
             foreach (var li in list)
             {
-                deptRegItems.Add(new Entity.SlefServiceModels.DeptRegItem()
+                deptRegItems.Add(new Entity.SResponse.DeptRegItem()
                 {
                     scheduleDate = li.bookdate.ToString(),
                     totalNum = Convert.ToInt32(li.qty),
@@ -33,9 +33,14 @@ namespace SelfServiceMachine.Bussiness
             return Iregarrange.Get(x => x.argid == argid && x.regno != null && x.regno != 0);
         }
 
-        public reg_arrange GetReg_Arrange(string dept,string doctor)
+        public reg_arrange GetReg_Arrange(string dept, string doctor)
         {
             return Iregarrange.GetReg_arrange(dept, doctor);
+        }
+
+        public int GetItemIdByRegno(int regno)
+        {
+            return Convert.ToInt32(Iregarrange.Get(x => x.regno == regno).itemid);
         }
     }
 }

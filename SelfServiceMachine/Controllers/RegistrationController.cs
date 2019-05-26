@@ -2,7 +2,10 @@
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity.SlefServiceModels;
+using SelfServiceMachine.Models.Request;
 using SelfServiceMachine.Models.Response;
+using SelfServiceMachine.Utils;
+using SelfServiceMachine.Entity.SRequest;
 
 namespace SelfServiceMachine.Controllers
 {
@@ -46,40 +49,31 @@ namespace SelfServiceMachine.Controllers
         {
             if (string.IsNullOrWhiteSpace(getRegDeptsXML))
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML不能为空"
-                });
+                return RsXmlHelper.ResXml(-1, "XML不能为空");
             }
 
-            var getRegDepts = XMLHelper.DESerializer<Entity.SlefServiceModels.GetRegDepts>(getRegDeptsXML);
+            var getRegDepts = XMLHelper.DESerializer<request<getRegDepts>>(getRegDeptsXML);
             if (getRegDepts == null)
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML格式错误"
-                });
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
-            var deptItems = sysDeptBLL.GetGDeptItems(getRegDepts.parentDeptCode);
+            var deptItems = sysDeptBLL.GetGDeptItems(getRegDepts.model.parentDeptCode);
             if (deptItems.Count > 0)
             {
-                return XMLHelper.XmlSerialize(new Models.Response.GetRegDepts()
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.getRegDepts>()
                 {
-                    resultCode = 0,
-                    resultMessage = "",
-                    item = deptItems
+                    model = new Entity.SResponse.getRegDepts()
+                    {
+                        resultCode = 0,
+                        resultMessage = "",
+                        item = deptItems
+                    }
                 });
             }
             else
             {
-                return XMLHelper.XmlSerialize(new Models.Response.GetRegDepts()
-                {
-                    resultCode = 1,
-                    resultMessage = "暂无数据"
-                });
+                return RsXmlHelper.ResXml(-1, "暂无数据");
             }
         }
 
@@ -93,40 +87,31 @@ namespace SelfServiceMachine.Controllers
         {
             if (string.IsNullOrWhiteSpace(getRegDoctorsXML))
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML不能为空"
-                });
+                return RsXmlHelper.ResXml(-1, "XML不能为空");
             }
 
-            var GetRegDoctors = XMLHelper.DESerializer<GetRegDoctors>(getRegDoctorsXML);
+            var GetRegDoctors = XMLHelper.DESerializer<request<Entity.SRequest.getRegDoctors>>(getRegDoctorsXML);
             if (GetRegDoctors == null)
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML格式错误"
-                });
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
-            var itemList = SysUserinfoBLL.GetRDoctorItems(GetRegDoctors.doctorCode);
+            var itemList = SysUserinfoBLL.GetRDoctorItems(GetRegDoctors.model.doctorCode);
             if (itemList.Count > 0)
             {
-                return XMLHelper.XmlSerialize(new Models.Response.getRegDoctors()
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.getRegDoctors>()
                 {
-                    resultCode = 0,
-                    resultMessage = "",
-                    item = itemList
+                    model = new Entity.SResponse.getRegDoctors()
+                    {
+                        resultCode = 0,
+                        resultMessage = "",
+                        item = itemList
+                    }
                 });
             }
             else
             {
-                return XMLHelper.XmlSerialize(new Models.Response.getRegDoctors()
-                {
-                    resultCode = 1,
-                    resultMessage = "暂无数据"
-                });
+                return RsXmlHelper.ResXml(-1, "暂无数据");
             }
         }
 
@@ -140,49 +125,36 @@ namespace SelfServiceMachine.Controllers
         {
             if (string.IsNullOrWhiteSpace(getDeptRegXML))
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML不能为空"
-                });
+                return RsXmlHelper.ResXml(-1, "XML不能为空");
             }
 
-            var getDeptReg = XMLHelper.DESerializer<GetDeptReg>(getDeptRegXML);
+            var getDeptReg = XMLHelper.DESerializer<request<Entity.SRequest.getDeptReg>>(getDeptRegXML);
             if (getDeptReg == null)
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = 99,
-                    resultMessage = "XML格式错误"
-                });
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
-            var dept = sysDeptBLL.GetDeptByCode(getDeptReg.deptCode);
+            var dept = sysDeptBLL.GetDeptByCode(getDeptReg.model.deptCode);
             if (dept == null)
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = 99,
-                    resultMessage = "科室code不存在"
-                });
+                return RsXmlHelper.ResXml(99, "科室code不存在");
             }
-            var regarrList = regArrangeBLL.GetDeptRegItems(dept.name, getDeptReg.beginDate, getDeptReg.endDate);
+            var regarrList = regArrangeBLL.GetDeptRegItems(dept.name, getDeptReg.model.beginDate, getDeptReg.model.endDate);
             if (regarrList.Count > 0)
             {
-                return XMLHelper.XmlSerialize(new Models.Response.getDeptReg()
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.getDeptReg>()
                 {
-                    resultCode = 0,
-                    resultMessage = "",
-                    item = regarrList
+                    model = new Entity.SResponse.getDeptReg()
+                    {
+                        resultCode = 0,
+                        resultMessage = "",
+                        item = regarrList
+                    }
                 });
             }
             else
             {
-                return XMLHelper.XmlSerialize(new Models.Response.getDeptReg()
-                {
-                    resultCode = 1,
-                    resultMessage = "数据为空"
-                });
+                return RsXmlHelper.ResXml(99, "数据为空");
             }
         }
     }
