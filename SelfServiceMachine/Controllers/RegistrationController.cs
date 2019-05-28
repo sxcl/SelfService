@@ -42,17 +42,17 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 可挂号科室查询（ 当天挂号也可以用  ）
         /// </summary>
-        /// <param name="getRegDeptsXML"></param>
+        /// <param name="getRegDepts"></param>
         /// <returns></returns>
         [HttpGet("getRegDepts")]
-        public string GetRegDepts(string getRegDeptsXML)
+        public string GetRegDepts(request<getRegDepts> getRegDepts)
         {
-            if (string.IsNullOrWhiteSpace(getRegDeptsXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //if (string.IsNullOrWhiteSpace(getRegDeptsXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var getRegDepts = XMLHelper.DESerializer<request<getRegDepts>>(getRegDeptsXML);
+            //var getRegDepts = XMLHelper.DESerializer<request<getRegDepts>>(getRegDeptsXML);
             if (getRegDepts == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -80,23 +80,23 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 可挂号医生查询（ 当天挂号也可以用  ）
         /// </summary>
-        /// <param name="getRegDoctorsXML"></param>
+        /// <param name="GetRegDoctors"></param>
         /// <returns></returns>
         [HttpGet("getRegDoctors")]
-        public string getRegDoctors(string getRegDoctorsXML)
+        public string getRegDoctors(request<Entity.SRequest.getRegDoctors> GetRegDoctors)
         {
-            if (string.IsNullOrWhiteSpace(getRegDoctorsXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //if (string.IsNullOrWhiteSpace(getRegDoctorsXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var GetRegDoctors = XMLHelper.DESerializer<request<Entity.SRequest.getRegDoctors>>(getRegDoctorsXML);
+            //var GetRegDoctors = XMLHelper.DESerializer<request<Entity.SRequest.getRegDoctors>>(getRegDoctorsXML);
             if (GetRegDoctors == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
-            var itemList = SysUserinfoBLL.GetRDoctorItems(GetRegDoctors.model.doctorCode);
+            var itemList = SysUserinfoBLL.GetRDoctorItems(GetRegDoctors.model.deptCode);
             if (itemList.Count > 0)
             {
                 return XMLHelper.XmlSerialize(new response<Entity.SResponse.getRegDoctors>()
@@ -118,17 +118,17 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 科室号源信息查询
         /// </summary>
-        /// <param name="getDeptRegXML"></param>
+        /// <param name="getDeptReg"></param>
         /// <returns></returns>
         [HttpGet("getDeptReg")]
-        public string getDeptReg(string getDeptRegXML)
+        public string getDeptReg(request<Entity.SRequest.getDeptReg> getDeptReg)
         {
-            if (string.IsNullOrWhiteSpace(getDeptRegXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //if (string.IsNullOrWhiteSpace(getDeptRegXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var getDeptReg = XMLHelper.DESerializer<request<Entity.SRequest.getDeptReg>>(getDeptRegXML);
+            //var getDeptReg = XMLHelper.DESerializer<request<Entity.SRequest.getDeptReg>>(getDeptRegXML);
             if (getDeptReg == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");

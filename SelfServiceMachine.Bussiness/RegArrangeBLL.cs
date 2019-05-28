@@ -33,14 +33,19 @@ namespace SelfServiceMachine.Bussiness
             return Iregarrange.Get(x => x.argid == argid && x.regno != null && x.regno != 0);
         }
 
-        public reg_arrange GetReg_Arrange(string dept, string doctor)
+        public reg_arrange GetReg_Arrange(string dept, string doctor, string beginTime, string endTime,int timeflag)
         {
-            return Iregarrange.GetReg_arrange(dept, doctor);
+            return Iregarrange.GetReg_arrange(dept, doctor, beginTime, endTime, timeflag);
         }
 
         public int GetItemIdByRegno(int regno)
         {
             return Convert.ToInt32(Iregarrange.Get(x => x.regno == regno).itemid);
+        }
+
+        public bool UpdateRegNoZero(int argid)
+        {
+            return Iregarrange.UpdateRegArrToZero(argid);
         }
     }
 }

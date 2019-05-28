@@ -38,6 +38,12 @@ namespace SelfServiceMachine.Service.IService
         /// <returns></returns>
         bool Add(T entity);
         /// <summary>
+        /// 批量添加
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        bool Adds(T[] entity);
+        /// <summary>
         /// 编辑
         /// </summary>
         /// <param name="entity"></param>
@@ -49,5 +55,11 @@ namespace SelfServiceMachine.Service.IService
         /// <param name="ids"></param>
         /// <returns></returns>
         bool Dels(dynamic[] ids);
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        bool Del(dynamic id);
     }
 }

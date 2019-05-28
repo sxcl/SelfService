@@ -1,4 +1,5 @@
-﻿using SelfServiceMachine.Entity;
+﻿using System.Collections.Generic;
+using SelfServiceMachine.Entity;
 using SelfServiceMachine.Service.IService;
 
 namespace SelfServiceMachine.Service.Service

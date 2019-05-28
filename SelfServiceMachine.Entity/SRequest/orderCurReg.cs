@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace SelfServiceMachine.Entity.SlefServiceModels
+namespace SelfServiceMachine.Entity.SRequest
 {
     public class orderCurReg
     {
@@ -8,17 +10,17 @@ namespace SelfServiceMachine.Entity.SlefServiceModels
         public string branchCode { get; set; }
         public string deptCode { get; set; }
         public string doctorCode { get; set; }
-        public int timeFlag { get; set; }
+        public string timeFlag { get; set; }
         public string beginTime { get; set; }
         public string endTime { get; set; }
-        public int? workId { get; set; }
+        public string workId { get; set; }
         public string ghhj { get; set; }
         public string regFee { get; set; }
-        public decimal? treatFee { get; set; }
-        public decimal? regType { get; set; }
-        public int patCardType { get; set; }
+        public string treatFee { get; set; }
+        public string regType { get; set; }
+        public string patCardType { get; set; }
         public string patCardNo { get; set; }
-        public int orderMode { get; set; }
+        public string orderMode { get; set; }
         public string orderTime { get; set; }
         public string orderNo { get; set; }
         public string SSCblx { get; set; }

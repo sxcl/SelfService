@@ -13,8 +13,6 @@ namespace SelfServiceMachine.Service.Service
     /// <typeparam name="T"></typeparam>
     public class BaseService<T> where T : class, new()
     {
-
-
         public SqlSugarClient db;
         public SimpleClient sdb;
 
@@ -83,6 +81,10 @@ namespace SelfServiceMachine.Service.Service
         {
             return sdb.Insert(entity);
         }
+        public bool Adds(T[] entity)
+        {
+            return sdb.InsertRange(entity);
+        }
 
         public bool Update(T entity)
         {
@@ -92,6 +94,12 @@ namespace SelfServiceMachine.Service.Service
         public bool Dels(dynamic[] ids)
         {
             return sdb.DeleteByIds<T>(ids);
+        }
+
+        public bool Del(dynamic id)
+        {
+            return sdb.Delete<T>(id
+                );
         }
         #endregion
     }

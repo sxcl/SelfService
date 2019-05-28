@@ -2,6 +2,8 @@
 using SelfServiceMachine.Entity.Insurance;
 using SelfServiceMachine.Entity.SlefServiceModels;
 using SelfServiceMachine.Service.IService;
+using System;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace SelfServiceMachine.Service.Service
@@ -28,6 +30,16 @@ namespace SelfServiceMachine.Service.Service
             }
             else
                 return null;
+        }
+
+        public bool DeleteFeeinfo(int regid, string sno)
+        {
+            var delQuery = "delete fee_info where regid = @regid and ftype = 2 and sno = @sno";
+
+            return Convert.ToInt32(db.Ado.GetScalar(delQuery, new SqlParameter[] {
+                new SqlParameter("@regid", regid),
+                new SqlParameter("@sno",sno)
+            })) > 0;
         }
     }
 }

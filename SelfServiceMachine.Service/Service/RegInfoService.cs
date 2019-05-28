@@ -52,6 +52,5 @@ namespace SelfServiceMachine.Service.Service
         {
             return db.Insertable(reg_Info).ExecuteReturnIdentity();
         }
-
     }
 }

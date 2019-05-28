@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
@@ -35,17 +36,17 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 患者信息查询
         /// </summary>
-        /// <param name="getMZPatientXML"></param>
+        /// <param name="getMZPatient"></param>
         /// <returns></returns>
         [HttpGet("getMZPatient")]
-        public string GetMZPatient(string getMZPatientXML)
+        public string GetMZPatient([FromBody]request<GetMZPatient> getMZPatient)
         {
-            if (string.IsNullOrWhiteSpace(getMZPatientXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //if (string.IsNullOrWhiteSpace(getMZPatientXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var getMZPatient = XMLHelper.DESerializer<request<GetMZPatient>>(getMZPatientXML);
+            //var getMZPatient = XMLHelper.DESerializer<request<GetMZPatient>>(getMZPatientXML);
             if (getMZPatient == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -88,17 +89,17 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 首诊患者建档
         /// </summary>
-        /// <param name="createACardXML"></param>
+        /// <param name="createACard"></param>
         /// <returns></returns>
         [HttpPost("createACard")]
-        public string CreateACard(string createACardXML)
+        public string CreateACard([FromBody]request<CreateACard> createACard)
         {
-            if (string.IsNullOrWhiteSpace(createACardXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //if (string.IsNullOrWhiteSpace(createACardXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var createACard = XMLHelper.DESerializer<request<CreateACard>>(createACardXML);
+            //var createACard = XMLHelper.DESerializer<request<CreateACard>>(createACardXML);
             if (createACard == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -116,7 +117,8 @@ namespace SelfServiceMachine.Controllers
                 patYbjbmc = createACard.model.patYbjbmc,
                 patCblx = createACard.model.patCblx,
                 idtype = CodeConvertUtils.GetIdNoType(createACard.model.patIdType),
-                idno = createACard.model.patIdNo
+                idno = createACard.model.patIdNo,
+                addtime = DateTime.Now
             };
 
             var isAdd = ptInfoBLL.Add(pt_Info);
@@ -142,17 +144,17 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 绑卡以及解绑
         /// </summary>
-        /// <param name="bindCardXML"></param>
+        /// <param name="bindCard"></param>
         /// <returns></returns>
         [HttpPost("bindCard")]
-        public string BindCard(string bindCardXML)
+        public string BindCard([FromBody]request<BindCard> bindCard)
         {
-            if (string.IsNullOrWhiteSpace(bindCardXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //if (string.IsNullOrWhiteSpace(bindCardXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var bindCard = XMLHelper.DESerializer<request<BindCard>>(bindCardXML);
+            //var bindCard = XMLHelper.DESerializer<request<BindCard>>(bindCardXML);
             if (bindCard == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -185,6 +187,9 @@ namespace SelfServiceMachine.Controllers
                         del = false
                     });
 
+                    ptInfo.cno = bindCard.model.patCardNo.Trim();
+                    ptInfoBLL.Update(ptInfo);
+
                     return RsXmlHelper.ResXml(0, "");
                 }
             }
@@ -211,17 +216,19 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 就诊卡充值
         /// </summary>
-        /// <param name="CardDepositXML"></param>
+        /// <param name="CardDeposit"></param>
         /// <returns></returns>
         [HttpPost("CardDeposit")]
-        public string CardDeposit(string CardDepositXML)
+        public string CardDeposit([FromBody]request<Entity.SlefServiceModels.CardDeposit> CardDeposit)
         {
-            if (string.IsNullOrWhiteSpace(CardDepositXML))
-            {
-                return RsXmlHelper.ResXml(-1, "XML不能为空");
-            }
+            //var reader = new StreamReader(Request.Body);
+            //var contentFromBody = reader.ReadToEnd();
+            //if (string.IsNullOrWhiteSpace(CardDepositXML))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
+            //}
 
-            var CardDeposit = XMLHelper.DESerializer<request<Entity.SlefServiceModels.CardDeposit>>(CardDepositXML);
+            //var CardDeposit = XMLHelper.DESerializer<request<Entity.SlefServiceModels.CardDeposit>>(CardDepositXML);
             if (CardDeposit == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");

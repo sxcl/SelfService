@@ -6,7 +6,7 @@ namespace SelfServiceMachine.Entity.SRequest
 {
     public class getRegDepts
     {
-        public int branchCode { get; set; }
+        public string branchCode { get; set; }
         public string parentDeptCode { get; set; }
     }
 }

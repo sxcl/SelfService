@@ -4,6 +4,7 @@ using SelfServiceMachine.Service.IService;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -33,11 +34,29 @@ namespace SelfServiceMachine.Service.Service
             });
         }
 
-        public reg_arrange GetReg_arrange(string dept, string doctor)
+        public reg_arrange GetReg_arrange(string dept, string doctor, string beginTime, string endTime, int timeFlag)
         {
-            var query = "select top 1 ra.* from reg_arrange ra where ra.booktime1 >= '06:00:00' and ra.booktime2 <= '12:00:00' and DATEDIFF(DAY,ra.addtime,GETDATE()) = 0 and dept = @dept and doctor = @doctor and regno is null";
+            var query = "";
+            if (timeFlag == 0)
+            {
+                query = "select ra.* from reg_arrange ra where ra.booktime1 >= '" + beginTime + "' and ra.booktime2 <= '" + endTime + "' and dept = @dept and doctor = @doctor and regno = 0 and DATEDIFF(DAY,bookdate,GETDATE()) = 0";
+            }
+            else if (timeFlag == 1)
+            {
+                query = "select ra.* from reg_arrange ra where ra.booktime1 >= '" + beginTime + "' and ra.booktime2 <= '" + endTime + "' and booktime1 >= '00:00:00' and booktime2 <= '14:00:00' and dept = @dept and doctor = @doctor and regno = 0 and DATEDIFF(DAY,bookdate,GETDATE()) = 0";
+            }
+            else
+            {
+                query = "select ra.* from reg_arrange ra where ra.booktime1 >= '" + beginTime + "' and ra.booktime2 <= '" + endTime + "' and booktime1 >= '14:00:00' and booktime2 <= '23:59:59' and dept = @dept and doctor = @doctor and regno = 0 and DATEDIFF(DAY,bookdate,GETDATE()) = 0";
+            }
 
             return db.Ado.SqlQuery<reg_arrange>(query, new SugarParameter[] { new SugarParameter("@dept", dept), new SugarParameter("@doctor", doctor) }).FirstOrDefault();
+        }
+
+        public bool UpdateRegArrToZero(int argid)
+        {
+            var query = "update reg_arrange set regno = 0 where argid = @argid";
+            return Convert.ToInt32(db.Ado.GetScalar(query, new SqlParameter("@argid", argid))) > 0;
         }
     }
 }

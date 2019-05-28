@@ -17,7 +17,7 @@ namespace SelfServiceMachine.Common
         /// <returns></returns>
         public static T DESerializer<T>(string strXML) where T : class
         {
-            strXML = strXML.Replace("<![CDATA[", "").Replace("]]>", "").Replace(" ", "T");
+            strXML = strXML.Replace("<![CDATA[", "").Replace("]]>", "");
             using (StringReader sr = new StringReader(strXML))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -58,7 +58,7 @@ namespace SelfServiceMachine.Common
                 XmlSerializer serializer = new XmlSerializer(obj.GetType());
                 serializer.Serialize(sw, obj, _namespaces);
                 sw.Close();
-                return sw.ToString().Replace("<noface>", "").Replace("</noface>", "");
+                return sw.ToString().Replace("<noface>", "").Replace("</noface>", "").Replace("<noface />", "").Replace("<noface/>", "");
             }
         }
 

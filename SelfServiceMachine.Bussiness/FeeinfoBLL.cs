@@ -4,6 +4,7 @@ using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SelfServiceMachine.Bussiness
@@ -37,7 +38,7 @@ namespace SelfServiceMachine.Bussiness
                 sno = sno
             });
 
-            return iFeechannel.Add(new Entity.fee_channel()
+            return iFeechannel.Add(new fee_channel()
             {
                 feeid = feeid,
                 chnn = type,
@@ -54,6 +55,26 @@ namespace SelfServiceMachine.Bussiness
         public MZ001 GetTrialData(int regid)
         {
             return iFeeinfo.GetTrialData(regid);
+        }
+
+        public fee_info GetFee_InfoByRegInfo(int regid)
+        {
+            return iFeeinfo.GetList(x => x.regid == regid && x.ftype == 2).FirstOrDefault();
+        }
+
+        public bool AddFeechannel(fee_channel fee_Channel)
+        {
+            return iFeechannel.Add(fee_Channel);
+        }
+
+        public bool Update(fee_info fee_Info)
+        {
+            return iFeeinfo.Update(fee_Info);
+        }
+
+        public bool DeleteFeeInfoByRegid(int regid, string sno)
+        {
+            return iFeeinfo.DeleteFeeinfo(regid, sno);
         }
     }
 }

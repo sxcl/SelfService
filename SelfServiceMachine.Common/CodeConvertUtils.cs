@@ -100,5 +100,26 @@
             }
             return para;
         }
+
+        public static string GetChannByCode(int code)
+        {
+            switch (code)
+            {
+                case 1:
+                    return "微信";
+                case 2:
+                    return "支付宝";
+                case 9:
+                    return "自助机";
+                case 91:
+                    return "自助机微信";
+                case 92:
+                    return "自助机支付宝";
+                case 93:
+                    return "自助机银联";
+                default:
+                    return "其它";
+            }
+        }
     }
 }
