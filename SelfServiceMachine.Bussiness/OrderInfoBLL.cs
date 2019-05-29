@@ -20,9 +20,9 @@ namespace SelfServiceMachine.Bussiness
             return iOrderinfo.GetMZFeeLists(para);
         }
 
-        public List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string billid)
+        public List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string regid, string billid)
         {
-            return iOrderinfo.GetMZFeeDetails(billid);
+            return iOrderinfo.GetMZFeeDetails(regid, billid);
         }
 
         public bool GetHasOrderByRegId(string mzFeeIdList)

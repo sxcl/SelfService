@@ -13,11 +13,11 @@ namespace SelfServiceMachine.Service.Service
             return db.Queryable<order_info>().In(iNums).ToList();
         }
 
-        public List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string billid)
+        public List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string regid,string billid)
         {
-            var query = "select o.addtime as itemTime,itemname as itemTime,itemtype as itemType,dpunit as itemUnit,itemid as itemId,scode as tybm,ccode as yljgnbbm,null as jsxm,prices*100 as itemPrice,spec as itemSpec,total as itemNumber,totalprices*100 as itemTotalFee,o.dept as deptName,su.userno as doctorCode,oi.doctor as doctorName,null as itemGroup,oi.billid as mzFeeId,null as budgetFlag,null as recipeNo from order_feedetail o left join order_info oi on o.billid = oi.billid left join sys_userinfo su on oi.uid = su.userid where o.billid = @billid";
+            var query = "select o.addtime as itemTime,itemname as itemTime,itemtype as itemType,dpunit as itemUnit,itemid as itemId,scode as tybm,ccode as yljgnbbm,null as jsxm,prices*100 as itemPrice,spec as itemSpec,total as itemNumber,totalprices*100 as itemTotalFee,o.dept as deptName,su.userno as doctorCode,oi.doctor as doctorName,null as itemGroup,oi.billid as mzFeeId,null as budgetFlag,null as recipeNo from order_feedetail o left join order_info oi on o.billid = oi.billid left join sys_userinfo su on oi.uid = su.userid where o.regid = @regid and billid = @billid";
 
-            return db.Ado.SqlQuery<Entity.SResponse.MZFeeDetail>(query, new { billid });
+            return db.Ado.SqlQuery<Entity.SResponse.MZFeeDetail>(query, new { regid, billid });
         }
 
         public List<Entity.SResponse.MZFeeList> GetMZFeeLists(string strWhere)

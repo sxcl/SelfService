@@ -104,7 +104,7 @@ namespace SelfServiceMachine.Controllers
                 });
             }
 
-            var MZFeeList = orderInfoBLL.GetMZFeeDetails(getMZFeeDetail.model.mzFeeId);
+            var MZFeeList = orderInfoBLL.GetMZFeeDetails(getMZFeeDetail.model.mzFeeId, getMZFeeDetail.model.recipeNo);
             if (MZFeeList.Count > 0)
             {
                 return XMLHelper.XmlSerialize(new Entity.SResponse.getMZFeeDetail()
