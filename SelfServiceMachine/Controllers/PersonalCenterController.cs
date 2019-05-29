@@ -38,7 +38,7 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <param name="getMZPatient"></param>
         /// <returns></returns>
-        [HttpGet("getMZPatient")]
+        [HttpPost("getMZPatient")]
         public string GetMZPatient([FromBody]request<GetMZPatient> getMZPatient)
         {
             //if (string.IsNullOrWhiteSpace(getMZPatientXML))
@@ -94,15 +94,14 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("createACard")]
         public string CreateACard([FromBody]request<CreateACard> createACard)
         {
-            //if (string.IsNullOrWhiteSpace(createACardXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var createACard = XMLHelper.DESerializer<request<CreateACard>>(createACardXML);
             if (createACard == null)
             {
-                return RsXmlHelper.ResXml(-1, "XML格式错误");
+                return RsXmlHelper.ResXml("-1", "XML格式错误");
+            }
+            var ptInfo = ptInfoBLL.GetPt_Info(x => x.idno == createACard.model.patIdNo);
+            if (ptInfo != null)
+            {
+                return RsXmlHelper.ResXml("1", "患者信息已存在");
             }
 
             pt_info pt_Info = new pt_info()
@@ -116,7 +115,7 @@ namespace SelfServiceMachine.Controllers
                 yno = createACard.model.patDnh,
                 patYbjbmc = createACard.model.patYbjbmc,
                 patCblx = createACard.model.patCblx,
-                idtype = CodeConvertUtils.GetIdNoType(createACard.model.patIdType),
+                idtype = CodeConvertUtils.GetIdNoType(Convert.ToInt32(createACard.model.patIdType)),
                 idno = createACard.model.patIdNo,
                 addtime = DateTime.Now
             };
@@ -128,7 +127,7 @@ namespace SelfServiceMachine.Controllers
                 {
                     model = new Entity.SResponse.createACard()
                     {
-                        resultCode = 0,
+                        resultCode = "0",
                         resultMessage = "",
                         patCardType = createACard.model.patIdType,
                         patCardNo = createACard.model.patIdNo
@@ -137,7 +136,7 @@ namespace SelfServiceMachine.Controllers
             }
             else
             {
-                return RsXmlHelper.ResXml(99, "建档失败");
+                return RsXmlHelper.ResXml("99", "建档失败");
             }
         }
 

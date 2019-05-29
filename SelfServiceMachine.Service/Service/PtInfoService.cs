@@ -31,7 +31,7 @@ namespace SelfServiceMachine.Service.Service
 
         public pt_info Get(Expression<Func<pt_info, bool>> whereLambda)
         {
-            return pdb.GetSingle(whereLambda);
+            return pdb.GetList(whereLambda).FirstOrDefault();
         }
 
         public pt_info Get(string idno)

@@ -19,7 +19,7 @@ namespace SelfServiceMachine.Service.Service
             foreach (var item in list)
             {
                 item.item = new List<Entity.SResponse.TimeItems>();
-                var timequery = "select distinct rm.timeflag as timeFlag,1 as hasDetailTime,ra.booktime1 as beginTime,ra.booktime2 as endTime,1 as workStatus,qty as totalNum,(select count(1) from reg_arrange where mgrid = rm.mgrid and reg_arrange.regno  = 0) as leftNum,0 as regFee,(select top 1 prices from comm_fee where itemid = rm.itemid and costtype = 3) as treatFee,rm.mgrid as scheduleNo from reg_manage rm right join reg_arrange ra on rm.mgrid = ra.mgrid where regtid = @regtid and ra.bookdate >= @beginDate and ra.bookdate <= @endDate";
+                var timequery = "select rm.timeflag as timeFlag,1 as hasDetailTime,ra.booktime1 as beginTime,ra.booktime2 as endTime,1 as workStatus,qty as totalNum,(select count(1) from reg_arrange where mgrid = rm.mgrid and reg_arrange.regno  = 0) as leftNum,((select top 1 prices from comm_fee where itemid = rm.itemid and costtype = 3)*100) as regFee,0 as treatFee,rm.mgrid as scheduleNo from reg_manage rm right join reg_arrange ra on rm.mgrid = ra.mgrid where regtid = @regtid and ra.bookdate >= @beginDate and ra.bookdate <= @endDate group by rm.timeflag,ra.booktime1,ra.booktime2,qty,rm.mgrid,rm.itemid";
 
                 item.item = db.Ado.SqlQuery<Entity.SResponse.TimeItems>(timequery, new SugarParameter[] { new SugarParameter("@regtid", item.regtid), new SugarParameter("@beginDate", beginDate), new SugarParameter("@endDate", endDate) });
             }

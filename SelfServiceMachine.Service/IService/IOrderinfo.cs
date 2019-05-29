@@ -1,12 +1,13 @@
 ﻿using SelfServiceMachine.Entity;
-using SelfServiceMachine.Entity.SlefServiceModels;
 using System.Collections.Generic;
 
 namespace SelfServiceMachine.Service.IService
 {
     public interface IOrderinfo : IBase<order_info>
     {
-        List<MZFeeList> GetMZFeeLists(string strWhere);
-        List<MZFeeDetail> GetMZFeeDetails(string billid);
+        List<Entity.SResponse.MZFeeList> GetMZFeeLists(string strWhere);
+        List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string billid);
+        List<order_info> GetMZFeeByBillids(string billids);
+        bool HasOrderByRegId(int regid);
     }
 }

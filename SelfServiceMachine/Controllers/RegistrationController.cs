@@ -44,7 +44,7 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <param name="getRegDepts"></param>
         /// <returns></returns>
-        [HttpGet("getRegDepts")]
+        [HttpPost("getRegDepts")]
         public string GetRegDepts(request<getRegDepts> getRegDepts)
         {
             //if (string.IsNullOrWhiteSpace(getRegDeptsXML))
@@ -55,7 +55,7 @@ namespace SelfServiceMachine.Controllers
             //var getRegDepts = XMLHelper.DESerializer<request<getRegDepts>>(getRegDeptsXML);
             if (getRegDepts == null)
             {
-                return RsXmlHelper.ResXml(-1, "XML格式错误");
+                return RsXmlHelper.ResXml("-1", "XML格式错误");
             }
 
             var deptItems = sysDeptBLL.GetGDeptItems(getRegDepts.model.parentDeptCode);
@@ -73,7 +73,7 @@ namespace SelfServiceMachine.Controllers
             }
             else
             {
-                return RsXmlHelper.ResXml(-1, "暂无数据");
+                return RsXmlHelper.ResXml("-1", "暂无数据");
             }
         }
 
@@ -82,7 +82,7 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <param name="GetRegDoctors"></param>
         /// <returns></returns>
-        [HttpGet("getRegDoctors")]
+        [HttpPost("getRegDoctors")]
         public string getRegDoctors(request<Entity.SRequest.getRegDoctors> GetRegDoctors)
         {
             //if (string.IsNullOrWhiteSpace(getRegDoctorsXML))
@@ -120,7 +120,7 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <param name="getDeptReg"></param>
         /// <returns></returns>
-        [HttpGet("getDeptReg")]
+        [HttpPost("getDeptReg")]
         public string getDeptReg(request<Entity.SRequest.getDeptReg> getDeptReg)
         {
             //if (string.IsNullOrWhiteSpace(getDeptRegXML))

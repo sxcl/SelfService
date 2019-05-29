@@ -16,4 +16,16 @@ namespace SelfServiceMachine.Models.Response
         /// </summary>
         public string resultMessage { get; set; }
     }
+
+    public class rsBaseModelP
+    {
+        /// <summary>
+        /// 状态码
+        /// </summary>
+        public string resultCode { get; set; }
+        /// <summary>
+        /// 返回消息
+        /// </summary>
+        public string resultMessage { get; set; }
+    }
 }

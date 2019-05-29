@@ -21,5 +21,10 @@ namespace SelfServiceMachine.Bussiness
         {
             return iDept.Get(x => x.code == deptCode);
         }
+
+        public string GetFloorByName(string dept)
+        {
+            return iDept.Get(x => x.name == dept).floor;
+        }
     }
 }

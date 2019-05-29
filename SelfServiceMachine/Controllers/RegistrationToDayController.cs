@@ -81,8 +81,8 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <param name="getCurRegInfo"></param>
         /// <returns></returns>
-        [HttpGet("getCurRegInfo")]
-        public string getCurRegInfo(request<Entity.SRequest.getCurRegInfo> getCurRegInfo)
+        [HttpPost("getCurRegInfo")]
+        public string GetCurRegInfo(request<Entity.SRequest.getCurRegInfo> getCurRegInfo)
         {
             //if (string.IsNullOrWhiteSpace(getCurRegInfoXml))
             //{
@@ -124,8 +124,8 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <param name="getCurDocTimeInfo"></param>
         /// <returns></returns>
-        [HttpGet("getCurDocTime")]
-        public string getCurDocTime(request<Entity.SRequest.getCurDocTime> getCurDocTimeInfo)
+        [HttpPost("getCurDocTime")]
+        public string GetCurDocTime(request<Entity.SRequest.getCurDocTime> getCurDocTimeInfo)
         {
             //if (string.IsNullOrWhiteSpace(getCurDocTimeXml))
             //{
@@ -157,7 +157,7 @@ namespace SelfServiceMachine.Controllers
         /// <param name="orderCurRegInfo"></param>
         /// <returns></returns>
         [HttpPost("orderCurReg")]
-        public string orderCurReg(request<Entity.SRequest.orderCurReg> orderCurRegInfo)
+        public string OrderCurReg(request<Entity.SRequest.orderCurReg> orderCurRegInfo)
         {
             //if (string.IsNullOrWhiteSpace(orderCurRegXML))
             //{
@@ -221,7 +221,7 @@ namespace SelfServiceMachine.Controllers
         /// <param name="payCurReg"></param>
         /// <returns></returns>
         [HttpPost("payCurReg")]
-        public string payCurReg(request<Entity.SRequest.payCurReg> payCurReg)
+        public string PayCurReg(request<Entity.SRequest.payCurReg> payCurReg)
         {
             //if (string.IsNullOrWhiteSpace(payCurRegXML))
             //{
@@ -233,7 +233,9 @@ namespace SelfServiceMachine.Controllers
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
-            if (payCurReg.model.payMode == 1) //自费
+
+            string floor = "";
+            if (payCurReg.model.payMethod == "1") //自费
             {
                 var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(payCurReg.model.hisOrdNum));
                 if (regInfo == null)
@@ -243,17 +245,20 @@ namespace SelfServiceMachine.Controllers
 
                 var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
                 fee_info.del = false;
-                fee_info.addtime = payCurReg.model.payTime;
-                fee_info.amountrec = payCurReg.model.payAmout;
-                fee_info.amountcol = payCurReg.model.payAmout;
-                fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + payCurReg.model.payAmout + ",payTime:" + payCurReg.model.payTime;
+                fee_info.addtime = Convert.ToDateTime(payCurReg.model.payTime);
+                fee_info.amountrec = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
+                fee_info.amountcol = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
+                fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + Convert.ToDecimal(payCurReg.model.payAmout) / 100 + ",payTime:" + payCurReg.model.payTime;
+                regInfo.del = false;
+                reginfoBLL.UpdateRegInfo(regInfo);
+                floor = sysDeptBLL.GetFloorByName(regInfo.dept);
 
                 feeinfoBLL.Update(fee_info);
                 feeinfoBLL.AddFeechannel(new fee_channel()
                 {
                     feeid = fee_info.feeid,
-                    chnn = CodeConvertUtils.GetChannByCode(payCurReg.model.payMode),
-                    amount = payCurReg.model.payAmout,
+                    chnn = payCurReg.model.payMode,
+                    amount = Convert.ToDecimal(payCurReg.model.payAmout) / 100,
                     del = false,
                 });
             }
@@ -268,7 +273,7 @@ namespace SelfServiceMachine.Controllers
                 {
                     resultCode = 0,
                     resultMessage = "",
-                    visitLocation = ""
+                    visitLocation = floor
                 }
             });
         }
@@ -279,7 +284,7 @@ namespace SelfServiceMachine.Controllers
         /// <param name="cancelCurReg"></param>
         /// <returns></returns>
         [HttpPost("cancelCurReg")]
-        public string cancelCurReg(request<cancelCurReg> cancelCurReg)
+        public string CancelCurReg(request<cancelCurReg> cancelCurReg)
         {
             //if (string.IsNullOrWhiteSpace(cancelCurRegXML))
             //{
@@ -303,92 +308,88 @@ namespace SelfServiceMachine.Controllers
             reginfoBLL.DeleteReginfo(regInfo.regid);
 
             //return XMLHelper.XmlSerialize(new response<Entity.SResponse>)
-            return null;
-        }
-
-        /// <summary>
-        /// 医保挂号试算
-        /// </summary>
-        /// <param name="getReginsurance"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public string getRegInsurance(request<getClinicalTrial> getReginsurance)
-        {
-            //if (!string.IsNullOrWhiteSpace(getRegInsuranceXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空。");
-            //}
-
-            //var getReginsurance = XMLHelper.DESerializer<request<getClinicalTrial>>(getRegInsuranceXML);
-            if (getReginsurance == null)
-            {
-                return RsXmlHelper.ResXml(-1, "XML格式错误。");
-            }
-
-            var regArrange = regArrangeBLL.GetReg_Arrange(getReginsurance.model.workId);
-            if (regArrange == null)
-            {
-                return "号源信息为空";
-            }
-            return null;
+            return RsXmlHelper.ResXml(0, "取消挂号成功");
         }
 
         /// <summary>
         /// 医保门诊预结算
         /// </summary>
-        /// <param name="getMZinsu"></param>
+        /// <param name="getClinicalTrial"></param>
         /// <returns></returns>
         [HttpPost("getMZInsurance")]
-        public string getMZInsurance(request<Entity.SRequest.getMZInsurance> getMZinsu)
+        public string GetMZInsurance(request<Entity.SRequest.getClinicalTrial> getClinicalTrial)
         {
+            #region 废弃
             //if (string.IsNullOrWhiteSpace(trialCalculationXML))
             //{
             //    return RsXmlHelper.ResXml(-1, "XML不能为空");
             //}
 
             //var getMZinsu = XMLHelper.DESerializer<request<Entity.SRequest.getMZInsurance>>(trialCalculationXML);
-            if (getMZinsu == null)
+            //if (getMZinsu == null)
+            //{
+            //    return RsXmlHelper.ResXml(-1, "XML格式错误");
+            //}
+
+            //var ptInfo = ptInfoBLL.GetPtInfoByCardNo("", getMZinsu.model.patCardType, getMZinsu.model.patCardNo);
+            //if (ptInfo == null)
+            //{
+            //    return RsXmlHelper.ResXml(99, "找不到患者信息");
+            //}
+
+            //var feeInfo = feeinfoBLL.GetFee_Info(getMZinsu.model.mzFeeId);
+            //if (feeInfo == null)
+            //{
+            //    return RsXmlHelper.ResXml(99, "无挂号记录");
+            //}
+
+            //var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(feeInfo.regid));
+            //if (regInfo == null)
+            //{
+            //    return RsXmlHelper.ResXml(99, "无挂号记录");
+            //}
+
+            //var itemid = regArrangeBLL.GetItemIdByRegno(regInfo.regid);
+            //var commFee = commFeeBLL.GetComm_Fee_Views(itemid);
+            //var mzModel001 = feeinfoBLL.GetTrialData(regInfo.regid);
+
+            //inputlist5 inputlist5 = new inputlist5()
+            //{
+            //    aae072 = regInfo.regid.ToString(),
+            //    bkf500 = regInfo.regid.ToString(),
+            //    ake001 = commFee.Fccode,
+            //    ake005 = commFee.Fitemid,
+            //    ake006 = commFee.Fitemname,
+            //    aae019 = commFee.Fprices.ToString()
+            //};
+            //mzModel001.akc264 = inputlist5.aae019;
+            //mzModel001.inputlist = new System.Collections.Generic.List<inputlist5>()
+            //{
+            //    inputlist5
+            //};
+            //HealthInsuranceHelper.Trial("MZ001", "", "", "", inputlist5); 
+            #endregion
+            if (getClinicalTrial == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
-            var ptInfo = ptInfoBLL.GetPtInfoByCardNo("", getMZinsu.model.patCardType, getMZinsu.model.patCardNo);
-            if (ptInfo == null)
+            reg_arrange reg_Arrange = new reg_arrange();
+            if (!string.IsNullOrWhiteSpace(getClinicalTrial.model.workId))
             {
-                return RsXmlHelper.ResXml(99, "找不到患者信息");
+                reg_Arrange = regArrangeBLL.GetReg_Arrange(Convert.ToInt32(getClinicalTrial.model.workId));
+            }
+            else
+            {
+                var dept = sysDeptBLL.GetDeptByCode(getClinicalTrial.model.deptCode);
+                var doctor = sysUserinfoBLL.GetRDoctor(getClinicalTrial.model.doctorCode);
+                reg_Arrange = regArrangeBLL.GetReg_Arrange(dept.name, doctor.username, getClinicalTrial.model.beginTime, getClinicalTrial.model.endTime, Convert.ToInt32(getClinicalTrial.model.timeFlag));
+            }
+            if (reg_Arrange == null)
+            {
+                return RsXmlHelper.ResXml(-1, "号源信息为空");
             }
 
-            var feeInfo = feeinfoBLL.GetFee_Info(getMZinsu.model.mzFeeId);
-            if (feeInfo == null)
-            {
-                return RsXmlHelper.ResXml(99, "无挂号记录");
-            }
-
-            var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(feeInfo.regid));
-            if (regInfo == null)
-            {
-                return RsXmlHelper.ResXml(99, "无挂号记录");
-            }
-
-            var itemid = regArrangeBLL.GetItemIdByRegno(regInfo.regid);
-            var commFee = commFeeBLL.GetComm_Fee_Views(itemid);
-            var mzModel001 = feeinfoBLL.GetTrialData(regInfo.regid);
-
-            inputlist5 inputlist5 = new inputlist5()
-            {
-                aae072 = regInfo.regid.ToString(),
-                bkf500 = regInfo.regid.ToString(),
-                ake001 = commFee.Fccode,
-                ake005 = commFee.Fitemid,
-                ake006 = commFee.Fitemname,
-                aae019 = commFee.Fprices.ToString()
-            };
-            mzModel001.akc264 = inputlist5.aae019;
-            mzModel001.inputlist = new System.Collections.Generic.List<inputlist5>()
-            {
-                inputlist5
-            };
-            HealthInsuranceHelper.Trial("MZ001", "", "", "", inputlist5);
 
             return null;
         }

@@ -142,5 +142,10 @@ namespace SelfServiceMachine.Bussiness
         {
             return iReginfo.Del(regid);
         }
+
+        public bool UpdateRegInfo(reg_info reg_Info)
+        {
+            return iReginfo.Update(reg_Info);
+        }
     }
 }
