@@ -22,7 +22,7 @@ namespace SelfServiceMachine.Service.Service
 
         public List<Entity.SResponse.MZFeeList> GetMZFeeLists(string strWhere)
         {
-            var query = "SELECT o.regid as mzFeeId,o.addtime as time,s.userno as doctorCode,o.doctor as doctorName,o.dept as deptName,sd.code as deptCode,r.feetype as MZ_TYPE,o.totprice*100 as payAmout,null as medicareAmout,o.totprice*100 as totalAmout,billid as recipeNo,null as Attachment FROM [ZSHIS].[dbo].[order_info] o left join sys_userinfo s on o.uid = s.userid left join sys_dept sd on sd.name = o.dept left join reg_info r on o.regid = r.regid left join pt_info p on r.pid = p.pid where " + strWhere;
+            var query = "SELECT o.regid as mzFeeId,o.addtime as time,s.userno as doctorCode,o.doctor as doctorName,o.dept as deptName,sd.code as deptCode,r.feetype as MZ_TYPE,o.totprice*100 as payAmout,null as medicareAmout,o.totprice*100 as totalAmout,billid as recipeNo,null as Attachment FROM [ZSHIS].[dbo].[order_info] o left join sys_userinfo s on o.uid = s.userid left join sys_dept sd on sd.name = o.dept left join reg_info r on o.regid = r.regid left join pt_info p on r.pid = p.pid where " + strWhere + " and (sd.type = '医疗' or sd.type is null)";
 
             return db.Ado.SqlQuery<Entity.SResponse.MZFeeList>(query);
         }
