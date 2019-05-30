@@ -5,6 +5,7 @@ using SelfServiceMachine.Service.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace SelfServiceMachine.Bussiness
@@ -12,6 +13,7 @@ namespace SelfServiceMachine.Bussiness
     public class FeeinfoBLL
     {
         private IFeeinfo iFeeinfo = new FeeinfoService();
+        private IPtInfo iPtInfo = new PtInfoService();
         private IFeeinfodetail iFeeinfodetail = new FeeinfodetailService();
         private IFeechannel iFeechannel = new FeechannelService();
 
@@ -75,6 +77,49 @@ namespace SelfServiceMachine.Bussiness
         public bool DeleteFeeInfoByRegid(int regid, string sno)
         {
             return iFeeinfo.DeleteFeeinfo(regid, sno);
+        }
+
+        public bool Add(fee_info fee_info)
+        {
+            return iFeeinfo.Add(fee_info);
+        }
+
+        public int AddReturnId(fee_info fee_Info)
+        {
+            return iFeeinfo.AddReturnId(fee_Info);
+        }
+
+        public pt_info GetFee_Infos(string cardtype, string cardno)
+        {
+            if (cardtype == "idno")
+            {
+                return iPtInfo.Get(x => x.idno == cardno);
+            }
+            else if (cardtype == "cno")
+            {
+                return iPtInfo.Get(x => x.cno == cardno);
+            }
+            else if (cardtype == "yno")
+            {
+                return iPtInfo.Get(x => x.yno == cardno);
+            }
+            else if (cardtype == "ybidentity")
+            {
+                return iPtInfo.Get(x => x.ybidentity == cardno);
+            }
+            else if (cardtype == "tel")
+            {
+                return iPtInfo.Get(x => x.tel == cardno);
+            }
+            else
+            {
+                return iPtInfo.Get(x => x.idno == cardno);
+            }
+        }
+
+        public List<Entity.SResponse.getPayItem> GetPayItems(int pid)
+        {
+            return iFeeinfo.GetPayItems(pid);
         }
     }
 }

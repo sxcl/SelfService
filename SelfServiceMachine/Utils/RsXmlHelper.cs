@@ -3,6 +3,9 @@ using SelfServiceMachine.Models.Response;
 
 namespace SelfServiceMachine.Utils
 {
+    /// <summary>
+    /// 默认XML格式
+    /// </summary>
     public class RsXmlHelper
     {
         /// <summary>

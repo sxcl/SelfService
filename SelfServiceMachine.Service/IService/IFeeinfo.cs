@@ -1,5 +1,6 @@
 ﻿using SelfServiceMachine.Entity;
 using SelfServiceMachine.Entity.Insurance;
+using System.Collections.Generic;
 
 namespace SelfServiceMachine.Service.IService
 {
@@ -9,5 +10,6 @@ namespace SelfServiceMachine.Service.IService
         MZ001 GetTrialData(int regid);
         fee_info GetFee_InfoByRegTrial(int feeid);
         bool DeleteFeeinfo(int regid, string sno);
+        List<Entity.SResponse.getPayItem> GetPayItems(int pid);
     }
 }

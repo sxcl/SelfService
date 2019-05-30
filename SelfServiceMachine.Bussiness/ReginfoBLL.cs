@@ -15,7 +15,7 @@ namespace SelfServiceMachine.Bussiness
         private IFeeinfo iFeeinfo = new FeeinfoService();
         private IFeeinfodetail iFeeinfodetail = new FeeinfodetailService();
 
-        public reg_info Add(reg_info reg_Info, pt_info pt_Info, reg_arrange reg_Arrange,string sno)
+        public reg_info Add(reg_info reg_Info, pt_info pt_Info, reg_arrange reg_Arrange, string sno, out decimal amount)
         {
             reg_Info.pid = pt_Info.pid;
             reg_Info.argid = reg_Arrange.argid;
@@ -126,6 +126,8 @@ namespace SelfServiceMachine.Bussiness
                     status = 0
                 });
             }
+            amount = Convert.ToDecimal(commFees.Sum(x => x.prices) * 100);
+
             iFeeinfodetail.Adds(FeeInfoDetail.ToArray());
             reg_Arrange.regno = reg_Info.regid;
             reg_Arrange.moditime = DateTime.Now;

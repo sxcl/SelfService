@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;

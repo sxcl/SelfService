@@ -193,23 +193,25 @@ namespace SelfServiceMachine.Controllers
                 feetype = "自费";
                 pt_Info = ptInfoBLL.GetPt_Info(x => x.cno == orderCurRegInfo.model.patCardNo || x.idno == orderCurRegInfo.model.patCardNo);
             }
+
             var reg_Info = reginfoBLL.Add(new reg_info()
             {
                 feetype = feetype
-            }, pt_Info, reg_Arrange, orderCurRegInfo.model.orderNo);
+            }, pt_Info, reg_Arrange, orderCurRegInfo.model.orderNo, out decimal amount);
             if (reg_Info == null)
             {
                 return RsXmlHelper.ResXml(99, "挂号失败");
             }
             else
             {
-                return XMLHelper.XmlSerialize(new request<Entity.SResponse.orderCurReg>()
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.orderCurReg>()
                 {
                     model = new Entity.SResponse.orderCurReg()
                     {
                         resultCode = 0,
                         resultMessage = "",
-                        hisOrdNum = reg_Info.regid.ToString()
+                        hisOrdNum = reg_Info.regid.ToString(),
+                        treatFee = amount.ToString()
                     }
                 });
             }
@@ -267,7 +269,7 @@ namespace SelfServiceMachine.Controllers
 
             }
 
-            return XMLHelper.XmlSerialize(new request<Entity.SResponse.payCurReg>()
+            return XMLHelper.XmlSerialize(new response<Entity.SResponse.payCurReg>()
             {
                 model = new Entity.SResponse.payCurReg()
                 {

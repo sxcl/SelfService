@@ -51,5 +51,12 @@ namespace SelfServiceMachine.Entity
            /// </summary>           
            public bool? del {get;set;}
 
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string sno {get;set;}
+
     }
 }
