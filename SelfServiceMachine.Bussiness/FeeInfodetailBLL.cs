@@ -15,5 +15,20 @@ namespace SelfServiceMachine.Bussiness
         {
             return iFeeinfodetail.Adds(fee_Infodetails.ToArray());
         }
+
+        public List<Entity.SResponse.PayFeeDetailItem> GetPayFeeDetailItems(int feeid)
+        {
+            return iFeeinfodetail.GetPayFeeDetailItems(feeid);
+        }
+
+        public List<fee_infodetail> GetFee_Infodetails(int feeid)
+        {
+            return iFeeinfodetail.GetList(x=>x.feeid == feeid && x.del == true);
+        }
+
+        public bool Updates(List<fee_infodetail> fee_Infodetails)
+        {
+            return iFeeinfodetail.Updates(fee_Infodetails);
+        }
     }
 }

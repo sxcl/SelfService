@@ -2,17 +2,16 @@
 using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SelfServiceMachine.Bussiness
 {
-    public class CommFeeBLL
+    public class RegTrialBLL
     {
-        private ICommFee iCommfee = new CommFeeService();
+        private IRegTrial iRegTrial = new RegTrialService();
 
-        public List<comm_fee_view> GetComm_Fee_Views(int itemid)
+        public bool Adds(List<reg_trial> reg_Trials)
         {
-            return iCommfee.GetComm_Fee_Views(itemid);
+            return iRegTrial.Adds(reg_Trials.ToArray());
         }
     }
 }

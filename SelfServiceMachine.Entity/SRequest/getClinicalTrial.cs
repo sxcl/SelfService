@@ -7,7 +7,6 @@ namespace SelfServiceMachine.Entity.SRequest
     public class getClinicalTrial
     {
         public string workId { get; set; }
-
         public string patCardType { get; set; }
         public string patCardNo { get; set; }
         public string ghhj { get; set; }

@@ -71,11 +71,7 @@ namespace SelfServiceMachine.Controllers
             //var getMZFeeList = XMLHelper.DESerializer<Entity.SlefServiceModels.GetMZFeeList>(getMZFeeListXML);
             if (getMZFeeList == null)
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML格式错误"
-                });
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
             var feeItems = orderInfoBLL.GetMZFeeLists(getMZFeeList.model.patCardType, getMZFeeList.model.patCardNo);
@@ -119,11 +115,7 @@ namespace SelfServiceMachine.Controllers
             //var getMZFeeDetail = XMLHelper.DESerializer<Entity.SRequest.getMZFeeDetail>(getMZFeeDetailXML);
             if (getMZFeeDetail == null)
             {
-                return XMLHelper.XmlSerialize(new BaseXMLModel()
-                {
-                    resultCode = -1,
-                    resultMessage = "XML格式错误"
-                });
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
             var MZFeeList = orderInfoBLL.GetMZFeeDetails(getMZFeeDetail.model.mzFeeId, getMZFeeDetail.model.recipeNo);
@@ -309,6 +301,38 @@ namespace SelfServiceMachine.Controllers
                         resultMessage = "暂无数据"
                     }
                 });
+            }
+        }
+
+        /// <summary>
+        /// 门诊已缴费记录明细查询
+        /// </summary>
+        /// <param name="getPayFeeDetail"></param>
+        /// <returns></returns>
+        [HttpPost("getPayFeeDetail")]
+        public string GetPayFeeDetail(request<Entity.SRequest.getPayFeeDetail> getPayFeeDetail)
+        {
+            if (getPayFeeDetail == null)
+            {
+                return RsXmlHelper.ResXml(-1, "XML个数错误");
+            }
+
+            var itemList = feeInfodetailBLL.GetPayFeeDetailItems(Convert.ToInt32(getPayFeeDetail.model.mzFeeIdList));
+
+            if (itemList != null && itemList.Count > 0)
+            {
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.getPayFeeDetail>()
+                {
+                    model = new Entity.SResponse.getPayFeeDetail()
+                    {
+                        resultCode = 0,
+                        item = itemList
+                    }
+                });
+            }
+            else
+            {
+                return RsXmlHelper.ResXml(1, "暂无数据");
             }
         }
     }

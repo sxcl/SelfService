@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
@@ -58,6 +61,18 @@ namespace SelfServiceMachine.Controllers
         /// 
         /// </summary>
         public CommFeeBLL commFeeBLL;
+        /// <summary>
+        /// 
+        /// </summary>
+        public CommKeyBLL commKeyBLL;
+        /// <summary>
+        /// 
+        /// </summary>
+        public FeeInfodetailBLL feeInfodetailBLL;
+        /// <summary>
+        /// 
+        /// </summary>
+        public RegTrialBLL regTrialBLL;
 
         /// <summary>
         /// 构造函数
@@ -74,6 +89,9 @@ namespace SelfServiceMachine.Controllers
             ptInfoBLL = new PtInfoBLL();
             feeinfoBLL = new FeeinfoBLL();
             commFeeBLL = new CommFeeBLL();
+            commKeyBLL = new CommKeyBLL();
+            feeInfodetailBLL = new FeeInfodetailBLL();
+            regTrialBLL = new RegTrialBLL();
         }
 
         /// <summary>
@@ -246,11 +264,17 @@ namespace SelfServiceMachine.Controllers
                 }
 
                 var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
+
                 fee_info.del = false;
                 fee_info.addtime = Convert.ToDateTime(payCurReg.model.payTime);
                 fee_info.amountrec = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
                 fee_info.amountcol = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
                 fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + Convert.ToDecimal(payCurReg.model.payAmout) / 100 + ",payTime:" + payCurReg.model.payTime;
+
+                var feeinfodetails = feeInfodetailBLL.GetFee_Infodetails(fee_info.feeid);
+                feeinfodetails.ForEach(x => x.del = false);
+                feeInfodetailBLL.Updates(feeinfodetails);
+
                 regInfo.del = false;
                 reginfoBLL.UpdateRegInfo(regInfo);
                 floor = sysDeptBLL.GetFloorByName(regInfo.dept);
@@ -262,6 +286,7 @@ namespace SelfServiceMachine.Controllers
                     chnn = payCurReg.model.payMode,
                     amount = Convert.ToDecimal(payCurReg.model.payAmout) / 100,
                     del = false,
+                    sno = payCurReg.model.psOrdNum
                 });
             }
             else //医保
@@ -319,7 +344,7 @@ namespace SelfServiceMachine.Controllers
         /// <param name="getClinicalTrial"></param>
         /// <returns></returns>
         [HttpPost("getMZInsurance")]
-        public string GetMZInsurance(request<Entity.SRequest.getClinicalTrial> getClinicalTrial)
+        public string GetMZInsurance(request<getClinicalTrial> getClinicalTrial)
         {
             #region 废弃
             //if (string.IsNullOrWhiteSpace(trialCalculationXML))
@@ -377,14 +402,16 @@ namespace SelfServiceMachine.Controllers
             }
 
             reg_arrange reg_Arrange = new reg_arrange();
+            var dept = new sys_dept();
+            var doctor = new sys_userinfo();
             if (!string.IsNullOrWhiteSpace(getClinicalTrial.model.workId))
             {
                 reg_Arrange = regArrangeBLL.GetReg_Arrange(Convert.ToInt32(getClinicalTrial.model.workId));
             }
             else
             {
-                var dept = sysDeptBLL.GetDeptByCode(getClinicalTrial.model.deptCode);
-                var doctor = sysUserinfoBLL.GetRDoctor(getClinicalTrial.model.doctorCode);
+                dept = sysDeptBLL.GetDeptByCode(getClinicalTrial.model.deptCode);
+                doctor = sysUserinfoBLL.GetRDoctor(getClinicalTrial.model.doctorCode);
                 reg_Arrange = regArrangeBLL.GetReg_Arrange(dept.name, doctor.username, getClinicalTrial.model.beginTime, getClinicalTrial.model.endTime, Convert.ToInt32(getClinicalTrial.model.timeFlag));
             }
             if (reg_Arrange == null)
@@ -392,8 +419,70 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml(-1, "号源信息为空");
             }
 
+            var commFees = commFeeBLL.GetComm_Fee_Views(Convert.ToInt32(reg_Arrange.itemid));
 
-            return null;
+            var mzno = commKeyBLL.GetMZNO();
+            var mz001 = new Entity.SRequest.MZ001()
+            {
+                akc190 = "HZS10" + mzno,
+                aaz500 = getClinicalTrial.model.SSCardNumber,
+                alc005 = "",
+                aka130 = "11",
+                akf001 = dept.ybno,
+                bkc368 = "1",
+                akc264 = commFees.Sum(x => x.prices).ToString(),
+                listsize = commFees.Count.ToString()
+            };
+            mz001.inputlist = new System.Collections.Generic.List<Entity.SRequest.inputlist5>();
+            List<reg_trial> reg_Trials = new List<reg_trial>();
+            foreach (var commFee in commFees)
+            {
+                var inputlist5 = new Entity.SRequest.inputlist5()
+                {
+                    aae072 = commKeyBLL.GetYBDJH().ToString(),
+                    bkf500 = commKeyBLL.GetYBXLH().ToString(),
+                    ake001 = commFee.scode,
+                    ake005 = commFee.itemid,
+                    ake006 = commFee.itemname,
+                    aae019 = commFee.prices.ToString()
+                };
+                mz001.inputlist.Add(inputlist5);
+                reg_Trials.Add(new reg_trial()
+                {
+                    aae072 = inputlist5.aae072,
+                    bkf500 = inputlist5.bkf500,
+                    ake001 = inputlist5.ake001,
+                    ake005 = inputlist5.ake005,
+                    ake006 = inputlist5.ake006,
+                    aae019 = Convert.ToDecimal(inputlist5.aae019),
+                    mzno = mzno,
+                    addtime = DateTime.Now
+                });
+            }
+
+
+            var ybsssno = commKeyBLL.GetYBNO();
+
+            var ybSno = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno;
+            var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "XX001|" + ybSno + "|H1110|" }), Encoding.UTF8, 1));
+            if (getVerifyCodeResult.resultCode != 0)
+            {
+                return null;
+            }
+
+            var version = getVerifyCodeResult.outParam.Split("|")[2];
+            var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
+            var result = HealthInsuranceHelper.RegTrial("MZ001", version, verify, ybsssno.ToString(), mz001);
+            if (result.transReturnCode == "0")
+            {
+                reg_Trials.ForEach(x => x.serialNumber = result.serialNumber);
+                regTrialBLL.Adds(reg_Trials);
+                return RsXmlHelper.ResXml(0, "医保试算成功");
+            }
+            else
+            {
+                return RsXmlHelper.ResXml(-1, result.transReturnMessage);
+            }
         }
     }
 }

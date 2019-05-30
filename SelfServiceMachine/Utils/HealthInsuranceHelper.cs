@@ -1,4 +1,8 @@
-﻿using System;
+﻿using SelfServiceMachine.Common;
+using SelfServiceMachine.Model;
+using System;
+using System.Net;
+using System.Text;
 
 namespace SelfServiceMachine.Utils
 {
@@ -16,7 +20,7 @@ namespace SelfServiceMachine.Utils
         /// <param name="serNum"></param>
         /// <param name="transBody"></param>
         /// <returns></returns>
-        public static string Trial(string transType, string transVersion, string verifyCode, string serNum, object transBody)
+        public static Entity.SResponse.pre_settlement RegTrial(string transType, string transVersion, string verifyCode, string serNum, object transBody)
         {
             var serialNumber = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + serNum;
             HealthMessage healthMessage = new HealthMessage()
@@ -39,7 +43,35 @@ namespace SelfServiceMachine.Utils
                 extendUserId = null,
                 extendSerialNumber = null
             };
-            return null;
+
+            var obj = PostData(JsonOperator.JsonSerialize(healthMessage));
+            return JsonOperator.JsonDeserialize<Entity.SResponse.pre_settlement>(obj);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static string PostData(string entity)
+        {
+            WebClient webClient = new WebClient();
+            byte[] postData;
+            byte[] byRemoteInfo;
+            string rtn = "";
+            try
+            {
+                webClient.Headers.Add("Content-Type", BaseDBConfig.ContentType);
+                postData = Encoding.UTF8.GetBytes(entity);
+                byRemoteInfo = webClient.UploadData(BaseDBConfig.MedicalInsuranceAddress, "POST", postData);
+                rtn = Encoding.UTF8.GetString(byRemoteInfo);
+            }
+            catch (Exception ex)
+            {
+                rtn = ex.ToString();
+            }
+
+            return rtn;
         }
     }
 

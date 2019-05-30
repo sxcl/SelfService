@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using NPinyin;
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity;
@@ -51,10 +52,10 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
-            if (getMZPatient.model.patCardType == 5 && string.IsNullOrWhiteSpace(getMZPatient.model.patName))
-            {
-                return RsXmlHelper.ResXml(-1, "当诊疗卡类型为身份证时，患者姓名不能为空");
-            }
+            //if (getMZPatient.model.patCardType == 5 && string.IsNullOrWhiteSpace(getMZPatient.model.patName))
+            //{
+            //    return RsXmlHelper.ResXml(-1, "当诊疗卡类型为身份证时，患者姓名不能为空");
+            //}
 
             var pt_Info = ptInfoBLL.GetPtInfoByCardNo(getMZPatient.model.patName, getMZPatient.model.patCardType, getMZPatient.model.patCardNo);
             if (pt_Info == null)
@@ -103,21 +104,47 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml("1", "患者信息已存在");
             }
 
-            pt_info pt_Info = new pt_info()
+            pt_info pt_Info = null;
+            if (!string.IsNullOrWhiteSpace(createACard.model.patYbkh) && !string.IsNullOrWhiteSpace(createACard.model.patDnh) && !string.IsNullOrWhiteSpace(createACard.model.patYbjbmc) && !string.IsNullOrWhiteSpace(createACard.model.patCblx))
             {
-                pname = createACard.model.patName,
-                sex = createACard.model.patSex == "M" ? "男" : "女",
-                birth = Convert.ToDateTime(createACard.model.patBirth),
-                addr1 = createACard.model.patAddress,
-                tel = createACard.model.patMobile,
-                ybidentity = createACard.model.patYbkh,
-                yno = createACard.model.patDnh,
-                patYbjbmc = createACard.model.patYbjbmc,
-                patCblx = createACard.model.patCblx,
-                idtype = CodeConvertUtils.GetIdNoType(Convert.ToInt32(createACard.model.patIdType)),
-                idno = createACard.model.patIdNo,
-                addtime = DateTime.Now
-            };
+                pt_Info = new pt_info()
+                {
+                    pname = createACard.model.patName,
+                    sex = createACard.model.patSex == "M" ? "男" : "女",
+                    birth = Convert.ToDateTime(createACard.model.patBirth),
+                    addr1 = createACard.model.patAddress,
+                    tel = createACard.model.patMobile,
+                    ybidentity = createACard.model.patYbkh,
+                    yno = createACard.model.patDnh,
+                    patYbjbmc = createACard.model.patYbjbmc,
+                    patCblx = createACard.model.patCblx,
+                    idtype = CodeConvertUtils.GetIdNoType(Convert.ToInt32(createACard.model.patIdType)),
+                    idno = createACard.model.patIdNo,
+                    addtime = DateTime.Now,
+                    del = false,
+                    pinyin = Pinyin.GetInitials(createACard.model.patName).ToLower(),
+                    memo = "患者通过自助机建档",
+                    addperson = "自助机"
+                };
+            }
+            else
+            {
+                pt_Info = new pt_info()
+                {
+                    pname = createACard.model.patName,
+                    sex = createACard.model.patSex == "M" ? "男" : "女",
+                    birth = Convert.ToDateTime(createACard.model.patBirth),
+                    addr1 = createACard.model.patAddress,
+                    tel = createACard.model.patMobile,
+                    idtype = CodeConvertUtils.GetIdNoType(Convert.ToInt32(createACard.model.patIdType)),
+                    idno = createACard.model.patIdNo,
+                    addtime = DateTime.Now,
+                    del = false,
+                    pinyin = Pinyin.GetInitials(createACard.model.patName).ToLower(),
+                    memo = "患者通过自助机建档",
+                    addperson = "自助机"
+                };
+            }
 
             var isAdd = ptInfoBLL.Add(pt_Info);
             if (isAdd != null)

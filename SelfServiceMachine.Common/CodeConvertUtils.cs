@@ -121,5 +121,15 @@
                     return "其它";
             }
         }
+
+        //public static int GetTypeBybkc368(string type)
+        //{
+        //    switch (type)
+        //    {
+        //        case 
+        //        default:
+        //            break;
+        //    }
+        //}
     }
 }
