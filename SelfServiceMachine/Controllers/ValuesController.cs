@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace SelfServiceMachine.Controllers
 {
@@ -10,6 +11,17 @@ namespace SelfServiceMachine.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly ILogger<ValuesController> _logger;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="logger"></param>
+        public ValuesController(ILogger<ValuesController> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Get
         /// </summary>
@@ -18,6 +30,9 @@ namespace SelfServiceMachine.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            _logger.LogError("我是错误显示");
+            _logger.LogDebug("我是调试信息");
+            _logger.LogInformation("我是提示信息");
             return new string[] { "value1", "value2" };
         }
 

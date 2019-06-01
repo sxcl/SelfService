@@ -15,14 +15,14 @@ namespace SelfServiceMachine.Entity.SResponse
 
     public class PayFeeDetailItem
     {
-        public DateTime itemTime { get; set; }
+        public string itemTime { get; set; }
         public string recipeNo { get; set; }
         public string itemName { get; set; }
         public string itemUnit { get; set; }
         public string itemId { get; set; }
-        public string itemCount { get; set; }
-        public string itemPrice { get; set; }
-        public string itemTotalFee { get; set; }
+        public int itemCount { get; set; }
+        public decimal itemPrice { get; set; }
+        public decimal itemTotalFee { get; set; }
         public string deptCode { get; set; }
         public string doctorCode { get; set; }
     }

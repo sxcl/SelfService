@@ -13,5 +13,15 @@ namespace SelfServiceMachine.Bussiness
         {
             return iRegTrial.Adds(reg_Trials.ToArray());
         }
+
+        public int AddReturnId(reg_trial reg_Trial)
+        {
+            return iRegTrial.AddReturnId(reg_Trial);
+        }
+
+        public reg_trial Get(int regid)
+        {
+            return iRegTrial.Get(x => x.regid == regid);
+        }
     }
 }

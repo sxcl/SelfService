@@ -1,16 +1,14 @@
 ﻿using System.IO;
-using log4net;
-using log4net.Config;
-using log4net.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using SelfServiceMachine.Filter;
-using SelfServiceMachine.Logger;
 using SelfServiceMachine.SwaggerHelp;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -21,10 +19,6 @@ namespace SelfServiceMachine
     /// </summary>
     public class Startup
     {
-        /// <summary>
-        /// log4net 仓储库
-        /// </summary>
-        public static ILoggerRepository repository { get; set; }
 
         /// <summary>
         /// 
@@ -33,12 +27,6 @@ namespace SelfServiceMachine
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            //log4net
-            repository = LogManager.CreateRepository("SelfServiceMachine");//需要获取日志的仓库名，也就是你的当然项目名
-
-            //指定配置文件
-            XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));//配置文件
         }
 
         /// <summary>
@@ -93,14 +81,10 @@ namespace SelfServiceMachine
             });
             #endregion
 
-            #region log日志注入
-            services.AddSingleton<ILoggerHelper, LoggerHelper>();
-
             services.AddMvc(o =>
             {
-                o.Filters.Add(typeof(GlobalExceptionsFilter));
+                o.Filters.Add<ActionFilter>();
             }).AddXmlSerializerFormatters().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            #endregion
         }
 
         /// <summary>
@@ -108,9 +92,14 @@ namespace SelfServiceMachine
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
+        /// <param name="loggerFactory"></param>
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddNLog(); //添加NLog
+            //引入NLog配置文件
+            env.ConfigureNLog("nlog.config");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -114,7 +114,7 @@ namespace SelfServiceMachine.Controllers
                     birth = Convert.ToDateTime(createACard.model.patBirth),
                     addr1 = createACard.model.patAddress,
                     tel = createACard.model.patMobile,
-                    ybidentity = createACard.model.patYbkh,
+                    ybidentity = createACard.model.patYbjbmc,
                     yno = createACard.model.patDnh,
                     patYbjbmc = createACard.model.patYbjbmc,
                     patCblx = createACard.model.patCblx,
@@ -149,9 +149,9 @@ namespace SelfServiceMachine.Controllers
             var isAdd = ptInfoBLL.Add(pt_Info);
             if (isAdd != null)
             {
-                return XMLHelper.XmlSerialize(new response<Entity.SResponse.createACard>()
+                return XMLHelper.XmlSerialize(new response<createACard>()
                 {
-                    model = new Entity.SResponse.createACard()
+                    model = new createACard()
                     {
                         resultCode = "0",
                         resultMessage = "",

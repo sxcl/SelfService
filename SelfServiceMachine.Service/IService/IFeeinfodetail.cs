@@ -6,7 +6,7 @@ namespace SelfServiceMachine.Service.IService
 {
     public interface IFeeinfodetail : IBase<fee_infodetail>
     {
-        List<PayFeeDetailItem> GetPayFeeDetailItems(int feeid);
+        List<Entity.SResponse.PayFeeDetailItem> GetPayFeeDetailItems(int feeid);
         bool Updates(List<fee_infodetail> fee_Infodetails);
     }
 }

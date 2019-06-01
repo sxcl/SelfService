@@ -26,5 +26,6 @@ namespace SelfServiceMachine.Entity.SResponse
         public decimal totalAmout { get; set; }
         public string recipeNo { get; set; }
         public string Attachment { get; set; }
+        public string dept { get; set; }
     }
 }

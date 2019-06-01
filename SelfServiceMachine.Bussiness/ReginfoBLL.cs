@@ -5,6 +5,7 @@ using SelfServiceMachine.Service.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SelfServiceMachine.Bussiness
 {
@@ -15,7 +16,7 @@ namespace SelfServiceMachine.Bussiness
         private IFeeinfo iFeeinfo = new FeeinfoService();
         private IFeeinfodetail iFeeinfodetail = new FeeinfodetailService();
 
-        public reg_info Add(reg_info reg_Info, pt_info pt_Info, reg_arrange reg_Arrange, string sno, out decimal amount)
+        public reg_info Add(reg_info reg_Info, pt_info pt_Info, reg_arrange reg_Arrange, string sno, out decimal amount, out int mzno, out int feeid, out List<comm_fee> commFees)
         {
             reg_Info.pid = pt_Info.pid;
             reg_Info.argid = reg_Arrange.argid;
@@ -28,7 +29,7 @@ namespace SelfServiceMachine.Bussiness
                 "SELECT [id] FROM [ZSHIS].[dbo].[comm_key] WHERE sn = 52"
             };
 
-            var mzno = iReginfo.GetMzno(mznoQuery);
+            mzno = iReginfo.GetMzno(mznoQuery);
             reg_Info.mzno = mzno;
             reg_Info.pname = pt_Info.pname;
             reg_Info.sex = pt_Info.sex;
@@ -76,7 +77,7 @@ namespace SelfServiceMachine.Bussiness
 
             List<int> itemid = new List<int>();
             itemid.Add(Convert.ToInt32(reg_Arrange.itemid));
-            var commFees = iReginfo.GetComm_Fees(itemid.ToArray(), reg_Info.feetype == "医疗保险" ? 5 : 3);
+            commFees = iReginfo.GetComm_Fees(itemid.ToArray(), reg_Info.feetype == "医疗保险" ? 5 : 3);
 
             fee_info fee_Info = new fee_info()
             {
@@ -98,7 +99,7 @@ namespace SelfServiceMachine.Bussiness
                 sno = sno
             };
 
-            var feeid = iFeeinfo.AddReturnId(fee_Info);
+            feeid = iFeeinfo.AddReturnId(fee_Info);
             var FeeInfoDetail = new List<fee_infodetail>();
             foreach (var commfee in commFees)
             {
@@ -148,6 +149,11 @@ namespace SelfServiceMachine.Bussiness
         public bool UpdateRegInfo(reg_info reg_Info)
         {
             return iReginfo.Update(reg_Info);
+        }
+
+        public reg_info Get(Expression<Func<reg_info, bool>> whereLambda)
+        {
+            return iReginfo.Get(whereLambda);
         }
     }
 }

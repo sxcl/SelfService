@@ -20,9 +20,14 @@ namespace SelfServiceMachine.Bussiness
             return iOrderinfo.GetMZFeeLists(para);
         }
 
-        public List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string visid, string billid)
+        public List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string regid, string billid)
         {
-            return iOrderinfo.GetMZFeeDetails(visid, billid);
+            return iOrderinfo.GetMZFeeDetails(regid, billid);
+        }
+
+        public List<order_info> GetMZOrderInfo(string regid, string billid)
+        {
+            return iOrderinfo.GetMZOrderInfo(Convert.ToInt32(regid), billid);
         }
 
         public bool GetHasOrderByVisid(string mzFeeIdList)
@@ -48,6 +53,18 @@ namespace SelfServiceMachine.Bussiness
         public bool Updates(List<order_info> orderInfoList)
         {
             return iOrderinfo.Updates(orderInfoList);
+        }
+
+        public List<order_info> Get(int visid, string billid)
+        {
+            if (string.IsNullOrWhiteSpace(billid))
+            {
+                return iOrderinfo.GetList(x => x.visid == visid);
+            }
+            else
+            {
+                return iOrderinfo.GetMZFeeByBillids(billid);
+            }
         }
     }
 }

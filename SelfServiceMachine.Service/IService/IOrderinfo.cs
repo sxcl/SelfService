@@ -10,5 +10,6 @@ namespace SelfServiceMachine.Service.IService
         List<order_info> GetMZFeeByBillids(string billids);
         bool HasOrderByVisid(int regid);
         bool Updates(List<order_info> order_Infos);
+        List<order_info> GetMZOrderInfo(int regid, string billid);
     }
 }

@@ -26,5 +26,6 @@ namespace SelfServiceMachine.Entity.SResponse
         public string hisMessage { get; set; }
         public string socialInsurance { get; set; }
         public string restsAmount { get; set; }
+        public string deptName { get; set; }
     }
 }

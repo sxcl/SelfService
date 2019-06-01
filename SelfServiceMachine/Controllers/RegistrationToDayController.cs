@@ -73,6 +73,10 @@ namespace SelfServiceMachine.Controllers
         /// 
         /// </summary>
         public RegTrialBLL regTrialBLL;
+        /// <summary>
+        /// 
+        /// </summary>
+        public RegTrialdetailBLL regTrialdetailBLL;
 
         /// <summary>
         /// 构造函数
@@ -92,6 +96,7 @@ namespace SelfServiceMachine.Controllers
             commKeyBLL = new CommKeyBLL();
             feeInfodetailBLL = new FeeInfodetailBLL();
             regTrialBLL = new RegTrialBLL();
+            regTrialdetailBLL = new RegTrialdetailBLL();
         }
 
         /// <summary>
@@ -190,14 +195,17 @@ namespace SelfServiceMachine.Controllers
 
             reg_arrange reg_Arrange = null;
             pt_info pt_Info = null;
+            var dept = new sys_dept();
+            var doctor = new sys_userinfo();
+
             if (!string.IsNullOrWhiteSpace(orderCurRegInfo.model.workId))
             {
                 reg_Arrange = regArrangeBLL.GetReg_Arrange(Convert.ToInt32(orderCurRegInfo.model.workId));
             }
             else
             {
-                var dept = sysDeptBLL.GetDeptByCode(orderCurRegInfo.model.deptCode);
-                var doctor = sysUserinfoBLL.GetRDoctor(orderCurRegInfo.model.doctorCode);
+                dept = sysDeptBLL.GetDeptByCode(orderCurRegInfo.model.deptCode);
+                doctor = sysUserinfoBLL.GetRDoctor(orderCurRegInfo.model.doctorCode);
                 reg_Arrange = regArrangeBLL.GetReg_Arrange(dept.name, doctor.username, orderCurRegInfo.model.beginTime, orderCurRegInfo.model.endTime, Convert.ToInt32(orderCurRegInfo.model.timeFlag));
             }
             var feetype = "";
@@ -215,24 +223,135 @@ namespace SelfServiceMachine.Controllers
             var reg_Info = reginfoBLL.Add(new reg_info()
             {
                 feetype = feetype
-            }, pt_Info, reg_Arrange, orderCurRegInfo.model.orderNo, out decimal amount);
+            }, pt_Info, reg_Arrange, orderCurRegInfo.model.orderNo, out decimal amount, out int mzno, out int feeid, out List<comm_fee> commFees);
+
             if (reg_Info == null)
             {
                 return RsXmlHelper.ResXml(99, "挂号失败");
             }
-            else
+
+            var regtrialId = regTrialBLL.AddReturnId(new reg_trial()
             {
-                return XMLHelper.XmlSerialize(new response<Entity.SResponse.orderCurReg>()
+                akc190 = "HZS10" + mzno,
+                aaz500 = orderCurRegInfo.model.SSCardNumber,
+                bzz269 = orderCurRegInfo.model.SSPwd,
+                aka130 = "11",
+                akf001 = dept.ybno,
+                bkc368 = "1",
+                bke384 = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + feeid,
+                akc264 = commFees.Sum(x => x.prices),
+                regid = reg_Info.regid
+            });
+
+            List<reg_trialdetail> reg_Trialdetails = new List<reg_trialdetail>();
+            foreach (var commFee in commFees)
+            {
+                reg_Trialdetails.Add(new reg_trialdetail()
                 {
-                    model = new Entity.SResponse.orderCurReg()
-                    {
-                        resultCode = 0,
-                        resultMessage = "",
-                        hisOrdNum = reg_Info.regid.ToString(),
-                        treatFee = amount.ToString()
-                    }
+                    id = regtrialId,
+                    aae072 = commKeyBLL.GetYBDJH().ToString(),
+                    bkf500 = commKeyBLL.GetYBXLH().ToString(),
+                    ake001 = commFee.scode,
+                    ake005 = commFee.itemid,
+                    ake006 = commFee.itemname,
+                    aae019 = commFee.prices
                 });
             }
+            regTrialdetailBLL.Adds(reg_Trialdetails);
+
+            #region 医保结算废弃代码
+            //else
+            //{
+            //if (feetype == "医疗保险")
+            //{
+            //    MZ002 mZ002 = new MZ002()
+            //    {
+            //        akc190 = "HZS10" + mzno,
+            //        aaz500 = orderCurRegInfo.model.SSCardNumber,
+            //        bzz269 = orderCurRegInfo.model.SSPwd,
+            //        aka130 = "11",
+            //        akf001 = dept.ybno,
+            //        bkc368 = "1",
+            //        bke384 = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + feeid,
+            //        akc264 = Math.Round(Convert.ToDecimal(commFees.Sum(x => x.prices)), 2),
+            //        listsize = commFees.Count
+            //    };
+            //    mZ002.inputlist = new List<inputlist>();
+            //    foreach (var comm_Fee in commFees)
+            //    {
+            //        mZ002.inputlist.Add(new inputlist()
+            //        {
+            //            aae072 = commKeyBLL.GetYBDJH().ToString(),
+            //            bkf500 = commKeyBLL.GetYBXLH().ToString(),
+            //            ake001 = comm_Fee.scode,
+            //            ake005 = comm_Fee.itemid,
+            //            ake006 = comm_Fee.itemname,
+            //            aae019 = Convert.ToDecimal(comm_Fee.prices)
+            //        });
+            //    }
+
+            //    var ybsssno = commKeyBLL.GetYBNO();
+
+            //    var ybSno = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno;
+            //    var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "XX001|" + ybSno + "|H1110|" }), Encoding.UTF8, 1));
+            //    if (getVerifyCodeResult.resultCode != 0)
+            //    {
+            //        return null;
+            //    }
+
+            //    var version = getVerifyCodeResult.outParam.Split("|")[2];
+            //    var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
+            //    var result = HealthInsuranceHelper.RegTrial<BaseMedInsurance<Entity.SResponse.MZ002>>("MZ002", version, verify, ybsssno.ToString(), mZ002);
+
+            //    if (result.transReturnCode == "0")
+            //    {
+            //        var regtrialId = regTrialBLL.Add(new reg_trial()
+            //        {
+            //            akc264 = result.transBody.akc264,
+            //            akb068 = result.transBody.akb068,
+            //            akb066 = result.transBody.akb066,
+            //            akb067 = result.transBody.akb067,
+            //            aae240 = result.transBody.aae240,
+            //            serialNumber = result.transBody.ckc618,
+            //            addtime = DateTime.Now
+            //        });
+            //        foreach (var item in result.transBody.outputlist)
+            //        {
+            //            regTrialdetailBLL.Add(new reg_trialdetail()
+            //            {
+            //                addtime = DateTime.Now,
+            //                aaa036 = item.aaa036,
+            //                aae019 = item.aae019,
+            //                id = regtrialId
+            //            });
+            //        }
+            //        return XMLHelper.XmlSerialize(new response<Entity.SResponse.orderCurReg>()
+            //        {
+            //            model = new Entity.SResponse.orderCurReg()
+            //            {
+            //                resultCode = 0,
+            //                resultMessage = "",
+            //                //hisOrdNum = 
+            //            }
+            //        });
+            //    }
+            //    else
+            //    {
+            //        return RsXmlHelper.ResXml(66, "医保挂号失败");
+            //    }
+            //} 
+            #endregion
+
+            return XMLHelper.XmlSerialize(new response<Entity.SResponse.orderCurReg>()
+            {
+                model = new Entity.SResponse.orderCurReg()
+                {
+                    resultCode = 0,
+                    resultMessage = "",
+                    hisOrdNum = reg_Info.regid.ToString(),
+                    treatFee = amount.ToString()
+                }
+            });
         }
 
         /// <summary>
@@ -243,56 +362,64 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("payCurReg")]
         public string PayCurReg(request<Entity.SRequest.payCurReg> payCurReg)
         {
-            //if (string.IsNullOrWhiteSpace(payCurRegXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var payCurReg = XMLHelper.DESerializer<request<Entity.SRequest.payCurReg>>(payCurRegXML);
             if (payCurReg == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
             string floor = "";
-            if (payCurReg.model.payMethod == "1") //自费
+            //if (payCurReg.model.payMethod == "1") //自费
+            //{
+            var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(payCurReg.model.hisOrdNum));
+            if (regInfo == null)
             {
-                var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(payCurReg.model.hisOrdNum));
-                if (regInfo == null)
-                {
-                    return RsXmlHelper.ResXml(99, "挂号信息为空");
-                }
+                return RsXmlHelper.ResXml(99, "挂号信息为空");
+            }
 
-                var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
+            var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
 
-                fee_info.del = false;
-                fee_info.addtime = Convert.ToDateTime(payCurReg.model.payTime);
-                fee_info.amountrec = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
-                fee_info.amountcol = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
-                fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + Convert.ToDecimal(payCurReg.model.payAmout) / 100 + ",payTime:" + payCurReg.model.payTime;
+            fee_info.del = false;
+            fee_info.addtime = Convert.ToDateTime(payCurReg.model.payTime);
+            fee_info.amountrec = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
+            fee_info.amountcol = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
+            fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + Convert.ToDecimal(payCurReg.model.payAmout) / 100 + ",payTime:" + payCurReg.model.payTime + (!string.IsNullOrWhiteSpace(payCurReg.model.SSSerialNo) ? "，自费金额：" + (Convert.ToDecimal(payCurReg.model.payAmout) - Convert.ToDecimal(payCurReg.model.SSMoney)) + "。" : "。");
 
-                var feeinfodetails = feeInfodetailBLL.GetFee_Infodetails(fee_info.feeid);
-                feeinfodetails.ForEach(x => x.del = false);
-                feeInfodetailBLL.Updates(feeinfodetails);
+            var feeinfodetails = feeInfodetailBLL.GetFee_Infodetails(fee_info.feeid);
+            feeinfodetails.ForEach(x => x.del = false);
+            feeInfodetailBLL.Updates(feeinfodetails);
 
-                regInfo.del = false;
-                reginfoBLL.UpdateRegInfo(regInfo);
-                floor = sysDeptBLL.GetFloorByName(regInfo.dept);
+            regInfo.del = false;
+            reginfoBLL.UpdateRegInfo(regInfo);
+            floor = sysDeptBLL.GetFloorByName(regInfo.dept);
 
-                feeinfoBLL.Update(fee_info);
+            feeinfoBLL.Update(fee_info);
+
+            feeinfoBLL.AddFeechannel(new fee_channel()
+            {
+                feeid = fee_info.feeid,
+                chnn = payCurReg.model.payMode,
+                amount = Convert.ToDecimal(payCurReg.model.payAmout) / 100,
+                del = false,
+                sno = payCurReg.model.psOrdNum
+            });
+
+
+            if (payCurReg.model.payMethod == "2")//医保
+            {
                 feeinfoBLL.AddFeechannel(new fee_channel()
                 {
                     feeid = fee_info.feeid,
-                    chnn = payCurReg.model.payMode,
-                    amount = Convert.ToDecimal(payCurReg.model.payAmout) / 100,
+                    chnn = "医疗保险",
+                    amount = Convert.ToDecimal(payCurReg.model.SSMoney) / 100,
                     del = false,
-                    sno = payCurReg.model.psOrdNum
+                    sno = payCurReg.model.SSSerialNo
                 });
             }
-            else //医保
-            {
+            //}
+            //else //医保
+            //{
 
-            }
+            //}
 
             return XMLHelper.XmlSerialize(new response<Entity.SResponse.payCurReg>()
             {
@@ -433,7 +560,7 @@ namespace SelfServiceMachine.Controllers
                 akc264 = commFees.Sum(x => x.prices).ToString(),
                 listsize = commFees.Count.ToString()
             };
-            mz001.inputlist = new System.Collections.Generic.List<Entity.SRequest.inputlist5>();
+            mz001.inputlist = new List<Entity.SRequest.inputlist5>();
             List<reg_trial> reg_Trials = new List<reg_trial>();
             foreach (var commFee in commFees)
             {
@@ -447,24 +574,24 @@ namespace SelfServiceMachine.Controllers
                     aae019 = commFee.prices.ToString()
                 };
                 mz001.inputlist.Add(inputlist5);
-                reg_Trials.Add(new reg_trial()
-                {
-                    aae072 = inputlist5.aae072,
-                    bkf500 = inputlist5.bkf500,
-                    ake001 = inputlist5.ake001,
-                    ake005 = inputlist5.ake005,
-                    ake006 = inputlist5.ake006,
-                    aae019 = Convert.ToDecimal(inputlist5.aae019),
-                    mzno = mzno,
-                    addtime = DateTime.Now
-                });
+                //reg_Trials.Add(new reg_trial()
+                //{
+                //    aae072 = inputlist5.aae072,
+                //    bkf500 = inputlist5.bkf500,
+                //    ake001 = inputlist5.ake001,
+                //    ake005 = inputlist5.ake005,
+                //    ake006 = inputlist5.ake006,
+                //    aae019 = Convert.ToDecimal(inputlist5.aae019),
+                //    mzno = mzno.ToString(),
+                //    addtime = DateTime.Now
+                //});
             }
 
 
             var ybsssno = commKeyBLL.GetYBNO();
 
             var ybSno = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno;
-            var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "XX001|" + ybSno + "|H1110|" }), Encoding.UTF8, 1));
+            var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "XX001|" + ybSno + "|HZS10|" }), Encoding.UTF8, 1));
             if (getVerifyCodeResult.resultCode != 0)
             {
                 return null;
@@ -472,16 +599,85 @@ namespace SelfServiceMachine.Controllers
 
             var version = getVerifyCodeResult.outParam.Split("|")[2];
             var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
-            var result = HealthInsuranceHelper.RegTrial("MZ001", version, verify, ybsssno.ToString(), mz001);
+            var result = HealthInsuranceHelper.RegTrial<Entity.SResponse.pre_settlement>("MZ001", version, verify, ybsssno.ToString(), mz001);
             if (result.transReturnCode == "0")
             {
-                reg_Trials.ForEach(x => x.serialNumber = result.serialNumber);
-                regTrialBLL.Adds(reg_Trials);
+                //reg_Trials.ForEach(x => x.serialNumber = result.serialNumber);
+                //regTrialBLL.Adds(reg_Trials);
                 return RsXmlHelper.ResXml(0, "医保试算成功");
             }
             else
             {
                 return RsXmlHelper.ResXml(-1, result.transReturnMessage);
+            }
+        }
+
+        /// <summary>
+        /// 门诊医保挂号结算
+        /// </summary>
+        /// <param name="getRegSettlement"></param>
+        /// <returns></returns>
+        [HttpPost("getRegSettlement")]
+        public string GetRegSettlement(request<getRegSettlement> getRegSettlement)
+        {
+            if (getRegSettlement == null)
+            {
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
+            }
+
+            var reg_Trial = regTrialBLL.Get(Convert.ToInt32(getRegSettlement.model.hisOrdNum));
+            var reg_trialDetails = regTrialdetailBLL.GetList(reg_Trial.id);
+
+            MZ002 mZ002 = new MZ002()
+            {
+                akc190 = reg_Trial.akc190,
+                aaz500 = reg_Trial.aaz500,
+                bzz269 = reg_Trial.bzz269,
+                alc005 = reg_Trial.alc005,
+                aka130 = reg_Trial.aka130,
+                akf001 = reg_Trial.akf001,
+                bkc368 = reg_Trial.bkc368,
+                aka120 = reg_Trial.aka120,
+                akc188 = reg_Trial.akc188,
+                akc189 = reg_Trial.akc189,
+                bke384 = reg_Trial.bke384,
+                akc264 = Convert.ToDecimal(reg_Trial.akc264),
+                listsize = reg_trialDetails.Count
+            };
+            mZ002.inputlist = new List<inputlist>();
+            foreach (var reg_Trialdetail in reg_trialDetails)
+            {
+                mZ002.inputlist.Add(new inputlist()
+                {
+                    aae072 = reg_Trialdetail.aae072,
+                    bkf500 = reg_Trialdetail.bkf500,
+                    ake001 = reg_Trialdetail.ake001,
+                    ake005 = reg_Trialdetail.ake005,
+                    ake006 = reg_Trialdetail.ake006,
+                    aae019 = Convert.ToDecimal(reg_Trialdetail.aae019)
+                });
+            }
+
+            var ybsssno = commKeyBLL.GetYBNO();
+
+            var ybSno = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno;
+            var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "XX001|" + ybSno + "|HZS10|" }), Encoding.UTF8, 1));
+            if (getVerifyCodeResult.resultCode != 0)
+            {
+                return null;
+            }
+
+            var version = getVerifyCodeResult.outParam.Split("|")[2];
+            var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
+            var result = HealthInsuranceHelper.RegTrial<BaseMedInsurance<Entity.SResponse.MZ002>>("MZ002", version, verify, ybsssno.ToString(), mZ002);
+
+            if (result.transReturnCode == "0")
+            {
+                return null;
+            }
+            else
+            {
+                return RsXmlHelper.ResXml(99, "医保结算失败");
             }
         }
     }

@@ -20,7 +20,7 @@ namespace SelfServiceMachine.Utils
         /// <param name="serNum"></param>
         /// <param name="transBody"></param>
         /// <returns></returns>
-        public static Entity.SResponse.pre_settlement RegTrial(string transType, string transVersion, string verifyCode, string serNum, object transBody)
+        public static T RegTrial<T>(string transType, string transVersion, string verifyCode, string serNum, object transBody)
         {
             var serialNumber = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + serNum;
             HealthMessage healthMessage = new HealthMessage()
@@ -45,7 +45,7 @@ namespace SelfServiceMachine.Utils
             };
 
             var obj = PostData(JsonOperator.JsonSerialize(healthMessage));
-            return JsonOperator.JsonDeserialize<Entity.SResponse.pre_settlement>(obj);
+            return JsonOperator.JsonDeserialize<T>(obj);
         }
 
         /// <summary>
