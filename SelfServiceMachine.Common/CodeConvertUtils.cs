@@ -122,14 +122,17 @@
             }
         }
 
-        //public static int GetTypeBybkc368(string type)
-        //{
-        //    switch (type)
-        //    {
-        //        case 
-        //        default:
-        //            break;
-        //    }
-        //}
+        public static int SwichRegType(string regType)
+        {
+            switch (regType)
+            {
+                case "普通":
+                    return 1;
+                case "专家":
+                    return 5;
+                default:
+                    return 1;
+            }
+        }
     }
 }

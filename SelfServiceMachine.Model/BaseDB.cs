@@ -17,7 +17,7 @@ namespace SelfServiceMachine.Model
                 });
             db.Aop.OnLogExecuted = (sql, pars) =>
             {
-                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)) + "\r\n" + DateTime.Now.ToLongTimeString());
                 Console.WriteLine();
             };
             return db;

@@ -15,6 +15,7 @@ namespace SelfServiceMachine.Entity.SResponse
 
     public class PayFeeDetailItem
     {
+
         public string itemTime { get; set; }
         public string recipeNo { get; set; }
         public string itemName { get; set; }

@@ -23,6 +23,7 @@
     <Compile Remove="Controllers\AdminController.cs" />
     <Compile Remove="Controllers\OrderinfoController.cs" />
     <Compile Remove="Controllers\PatientBasicInfoController.cs" />
+    <Compile Remove="Controllers\ValuesController.cs" />
   </ItemGroup>
 
   <ItemGroup>

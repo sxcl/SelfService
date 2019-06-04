@@ -12,7 +12,7 @@ namespace SelfServiceMachine.Bussiness
     {
         private IOrderinfo iOrderinfo = new OrderinfoService();
 
-        public List<Entity.SResponse.MZFeeList> GetMZFeeLists(int cardType, string cardNo)
+        public List<Entity.SResponse.MZFeeList> GetMZFeeLists(int cardType, string cardNo,string beginDate,string endDate)
         {
             var para = CodeConvertUtils.GetCardTypeByType(cardType);
             para += " = '" + cardNo + "'";
@@ -30,9 +30,9 @@ namespace SelfServiceMachine.Bussiness
             return iOrderinfo.GetMZOrderInfo(Convert.ToInt32(regid), billid);
         }
 
-        public bool GetHasOrderByVisid(string mzFeeIdList)
+        public bool GetHasOrderByRegid(string mzFeeIdList)
         {
-            return iOrderinfo.HasOrderByVisid(Convert.ToInt32(mzFeeIdList));
+            return iOrderinfo.HasOrderByRegid(Convert.ToInt32(mzFeeIdList));
         }
 
         public List<order_info> GetMZFeeByBillids(string recipeNo)
@@ -45,9 +45,9 @@ namespace SelfServiceMachine.Bussiness
             return false;
         }
 
-        public List<order_info> GetOrderByVisid(int visid)
+        public List<order_info> GetOrderByRegId(int regid)
         {
-            return iOrderinfo.GetList(x => x.visid == visid);
+            return iOrderinfo.GetList(x => x.regid == regid);
         }
 
         public bool Updates(List<order_info> orderInfoList)
@@ -55,11 +55,11 @@ namespace SelfServiceMachine.Bussiness
             return iOrderinfo.Updates(orderInfoList);
         }
 
-        public List<order_info> Get(int visid, string billid)
+        public List<order_info> Get(int regid, string billid)
         {
             if (string.IsNullOrWhiteSpace(billid))
             {
-                return iOrderinfo.GetList(x => x.visid == visid);
+                return iOrderinfo.GetList(x => x.regid == regid);
             }
             else
             {

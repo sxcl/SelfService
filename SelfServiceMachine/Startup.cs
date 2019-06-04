@@ -83,7 +83,7 @@ namespace SelfServiceMachine
 
             services.AddMvc(o =>
             {
-                o.Filters.Add<ActionFilter>();
+
             }).AddXmlSerializerFormatters().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

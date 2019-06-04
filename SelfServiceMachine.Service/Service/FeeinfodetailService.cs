@@ -11,7 +11,7 @@ namespace SelfServiceMachine.Service.Service
     {
         public List<Entity.SResponse.PayFeeDetailItem> GetPayFeeDetailItems(int feeid)
         {
-            var query = "select o.addtime as itemTime,o.billid as recipeNo,o.itemname as itemName,o.spec as itemUnit,o.itemid as itemId,o.total as itemCount,o.prices as itemPrice,o.totalprices as itemTotalFee,sd.code as deptCode,null as doctorCode from fee_infodetail fd left join fee_info f on fd.feeid = f.feeid left join order_detail o on fd.billid = o.billid left join sys_dept sd on o.dept = sd.name where (sd.type = '医疗' or sd.type is null) and f.feeid = '"+ feeid + "' group by o.addtime,o.billid,o.itemname,o.spec,o.itemid,o.total,o.prices,o.totalprices,sd.code";
+            var query = "select o.addtime as itemTime,o.billid as recipeNo,o.itemname as itemName,o.spec as itemUnit,o.itemid as itemId,o.total as itemCount,(o.prices*100) as itemPrice,(o.totalprices*100) as itemTotalFee,sd.code as deptCode,null as doctorCode from fee_infodetail fd left join fee_info f on fd.feeid = f.feeid left join order_detail o on fd.billid = o.billid left join sys_dept sd on o.dept = sd.name where (sd.type = '医疗' or sd.type is null) and f.feeid = '" + feeid + "' group by o.addtime,o.billid,o.itemname,o.spec,o.itemid,o.total,o.prices,o.totalprices,sd.code";
 
             return db.Ado.SqlQuery<PayFeeDetailItem>(query);
         }

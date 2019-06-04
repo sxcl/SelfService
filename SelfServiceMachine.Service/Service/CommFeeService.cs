@@ -9,7 +9,7 @@ namespace SelfServiceMachine.Service.Service
     {
         public List<comm_fee_view> GetComm_Fee_Views(int itemid)
         {
-            var query = "select * from comm_fee_view where itemid = @itemid and costtype = 5";
+            var query = "select * from comm_fee_view where Fitemid = @itemid and costtype = 5";
 
             return db.Ado.SqlQuery<comm_fee_view>(query, new SugarParameter("@itemid", itemid));
         }

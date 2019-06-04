@@ -27,24 +27,26 @@ namespace SelfServiceMachine.Utils
             {
                 transTime = DateTime.Now.ToString("yyyyMMddHHmmss:fff"),
                 transType = transType,
-                transReturnCode = null,
-                transReturnMessage = null,
+                transReturnCode = "",
+                transReturnMessage = "",
                 transVersion = transVersion,
                 serialNumber = serialNumber,
                 cardArea = "440300",
                 hospitalCode = "HZS10",
                 operatorCode = "jeff",
-                operatorName = "jeff",
-                operatorPass = null,
+                operatorName = "松下乘凉",
+                operatorPass = "123",
                 transBody = transBody,
                 transChannel = "10",
                 verifyCode = verifyCode,
-                extendDeviceId = null,
-                extendUserId = null,
-                extendSerialNumber = null
+                extendDeviceId = "",
+                extendUserId = "",
+                extendSerialNumber = ""
             };
 
             var obj = PostData(JsonOperator.JsonSerialize(healthMessage));
+
+            
             return JsonOperator.JsonDeserialize<T>(obj);
         }
 
@@ -61,9 +63,9 @@ namespace SelfServiceMachine.Utils
             string rtn = "";
             try
             {
-                webClient.Headers.Add("Content-Type", BaseDBConfig.ContentType);
+                webClient.Headers.Add("Content-Type", MedicalConfig.ContentType);
                 postData = Encoding.UTF8.GetBytes(entity);
-                byRemoteInfo = webClient.UploadData(BaseDBConfig.MedicalInsuranceAddress, "POST", postData);
+                byRemoteInfo = webClient.UploadData(MedicalConfig.MedicalInsuranceAddress, "POST", postData);
                 rtn = Encoding.UTF8.GetString(byRemoteInfo);
             }
             catch (Exception ex)

@@ -21,7 +21,7 @@ namespace SelfServiceMachine.Bussiness
 
         public List<reg_trialdetail> GetList(int regtrialid)
         {
-            return iRegTrialdetail.GetList(x => x.regtrialid == regtrialid);
+            return iRegTrialdetail.GetList(x => x.id == regtrialid);
         }
     }
 }

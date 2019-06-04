@@ -26,7 +26,7 @@ namespace SelfServiceMachine.Bussiness
             feeid = iFeeinfo.AddReturnId(new Entity.fee_info()
             {
                 pid = pid,
-                ftype = 0,
+                ftype = 3,
                 amountrec = amountrec,
                 amountcol = amountcol,
                 amountbak = 0,

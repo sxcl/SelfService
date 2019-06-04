@@ -15,6 +15,7 @@ namespace SelfServiceMachine.Entity.SResponse
     {
         public string branchCode { get; set; }
         public string branchName { get; set; }
+        public string hisOrdNum { get; set; }
         public string mzFeeIdList { get; set; }
         public string payTime { get; set; }
         public string payStatus { get; set; }

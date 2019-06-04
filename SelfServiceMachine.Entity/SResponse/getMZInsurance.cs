@@ -25,6 +25,7 @@ namespace SelfServiceMachine.Entity.SResponse
         public string doctorTelephone { get; set; }
         public string payType { get; set; }
         public string payAmount { get; set; }
+        public string insuranceAmout { get; set; }
         public string accountAmount { get; set; }
         public string medicareAmount { get; set; }
         public string insuranceAmount { get; set; }

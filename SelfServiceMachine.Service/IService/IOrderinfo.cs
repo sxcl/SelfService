@@ -8,7 +8,7 @@ namespace SelfServiceMachine.Service.IService
         List<Entity.SResponse.MZFeeList> GetMZFeeLists(string strWhere);
         List<Entity.SResponse.MZFeeDetail> GetMZFeeDetails(string regid, string billid);
         List<order_info> GetMZFeeByBillids(string billids);
-        bool HasOrderByVisid(int regid);
+        bool HasOrderByRegid(int regid);
         bool Updates(List<order_info> order_Infos);
         List<order_info> GetMZOrderInfo(int regid, string billid);
     }

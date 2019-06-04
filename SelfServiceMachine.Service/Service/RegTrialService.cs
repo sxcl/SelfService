@@ -7,7 +7,7 @@ namespace SelfServiceMachine.Service.Service
     {
         public int AddReturnId(reg_trial reg_Trial)
         {
-            return AddReturnId(reg_Trial);
+            return db.Insertable(reg_Trial).ExecuteReturnIdentity();
         }
     }
 }

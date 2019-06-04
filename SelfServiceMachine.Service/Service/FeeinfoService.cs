@@ -46,7 +46,7 @@ namespace SelfServiceMachine.Service.Service
 
         public List<Entity.SResponse.getPayItem> GetPayItems(int pid)
         {
-            var query = "select null as branchCode,null as branchName,fd.feeid as mzFeeIdList,fd.addtime as payTime,f.status as payStatus,oi.ordertype as itemType,fd.totalprice as ItemTotal,fd.feetype as payType,fd.totalprice as payAmout,oi.totprice as totalAmout,null as hisMessage,(case fd.feetype when '医疗保险' then fd.totalprice else 0 end) as socialInsurance,0 as restsAmount,oi.dept as deptName from fee_infodetail fd left join fee_info f on fd.feeid = f.feeid left join order_info oi on fd.billid = oi.billid left join fee_yb fb on f.feeid = fb.feeid where f.status = 0 and f.pid = @pid and fd.billid != 0 order by f.addtime desc";
+            var query = "select null as branchCode,f.feeid as hisOrdNum,null as branchName,f.regid as mzFeeIdList,f.addtime as payTime,f.status as payStatus,null as itemType,f.amountcol as ItemTotal,null as payType,f.amountcol as payAmout,f.amountcol as totalAmout,null as hisMessage,null as socialInsurance,0 as restsAmount,o.dept as deptName from fee_info f left join reg_info r on r.regid = f.regid left join fee_infodetail fd on f.feeid = fd.feeid left join order_info o on fd.billid = o.billid where f.status = 0 and f.pid = @pid and fd.billid != 0 group by f.feeid,f.regid,f.addtime,f.status,f.amountcol,o.dept order by f.addtime desc";
 
             return db.Ado.SqlQuery<Entity.SResponse.getPayItem>(query, new SugarParameter("@pid", pid));
         }
