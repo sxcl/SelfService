@@ -387,7 +387,7 @@ namespace SelfServiceMachine.Controllers
             var dept = sysDeptBLL.GetDeptByCode(getMZInsurance.model.deptCode);
             var doctor = sysUserinfoBLL.GetRDoctor(getMZInsurance.model.doctorCode);
 
-            var regInfo = reginfoBLL.Get(x => x.doctor == doctor.username && x.dept == dept.name && x.pid == ptInfo.pid);
+            var regInfo = reginfoBLL.Get(x => x.doctor == doctor.username && x.dept == dept.name && x.pid == ptInfo.pid && x.regid == Convert.ToInt32(getMZInsurance.model.mzFeeId));
             if (regInfo == null)
             {
                 return RsXmlHelper.ResXml(-1, "挂号信息为空");
@@ -430,7 +430,17 @@ namespace SelfServiceMachine.Controllers
                 }
                 else
                 {
-                    var commFee = commFeeBLL.GetComm_Fee_Views(Convert.ToInt32(order_Feedetail.itemid)).FirstOrDefault();
+                    var commFee = new comm_fee();
+                    //commFeeBLL.GetComm_Fee_Views(Convert.ToInt32(order_Feedetail.itemid)).FirstOrDefault();
+                    var isPackage = commFeeBLL.IsPackage(x => x.itemid == order_Feedetail.itemid && x.costtype == "5");
+                    if (isPackage)
+                    {
+                        commFee = commFeeBLL.Get(Convert.ToInt32(order_Feedetail.itemid));
+                    }
+                    else
+                    {
+                        commFee = commFeeBLL.Get(x => x.itemid == order_Feedetail.itemid && x.costtype == "5");
+                    }
                     fY001.inputlist.Add(new inputlistfy001()
                     {
                         aae072 = order_Feedetail.billid.ToString(),
@@ -438,7 +448,7 @@ namespace SelfServiceMachine.Controllers
                         bkf500 = order_Feedetail.bdfeeid.ToString(),
                         ake001 = commFee.scode,
                         ake002 = commFee.itemname,
-                        bkm017 = commFee.ccode,
+                        bkm017 = commFee.scode,
                         ake005 = commFee.itemid,
                         ake006 = commFee.itemname,
                         ala026 = "",
@@ -614,7 +624,7 @@ namespace SelfServiceMachine.Controllers
             }
             else
             {
-                return RsXmlHelper.ResXml(-1, result.transReturnMessage);
+                return RsXmlHelper.ResXml(-1, result.transReturnMessage + "{" + JsonOperator.JsonSerialize(fY005) + "}");
             }
         }
     }
