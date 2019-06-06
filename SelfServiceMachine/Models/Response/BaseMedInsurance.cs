@@ -1,5 +1,9 @@
 ﻿namespace SelfServiceMachine.Models.Response
 {
+    /// <summary>
+    /// 医保请求基类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BaseMedInsurance<T> where T : class, new()
     {
         /// <summary>

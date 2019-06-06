@@ -477,14 +477,11 @@ namespace SelfServiceMachine.Controllers
                 bke384 = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno
             };
 
-
             var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "FY001|" + ybSno + "|HZS10|" }), Encoding.UTF8, 1));
             if (getVerifyCodeResult.resultCode != 0 || getVerifyCodeResult.resultCode != 00000000)
             {
                 return RsXmlHelper.ResXml(-1, getVerifyCodeResult.resultMsg);
             }
-
-
 
             var version = getVerifyCodeResult.outParam.Split("|")[2];
             var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
@@ -501,9 +498,22 @@ namespace SelfServiceMachine.Controllers
 
             if (result.transReturnCode == "0" || result.transReturnCode == "00000000")
             {
+                feeTrialBLL.Add(new fee_trial()
+                {
+                    akc190 = fY004.akc190,
+                    aka130 = fY004.aka130,
+                    bkc320 = fY004.bkc320,
+                    ckc350 = fY004.ckc350,
+                    aka030 = fY004.aka030,
+                    akc264 = Convert.ToDecimal(fY004.akc264),
+                    ckc601 = fY004.ckc601,
+                    bke384 = fY004.bke384
+                });
+
                 //return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(result.transBody));
                 return XMLHelper.XmlSerialize(new response<Entity.SResponse.getMZInsurance>()
                 {
+
                     model = new Entity.SResponse.getMZInsurance()
                     {
                         resultCode = 0,
@@ -511,6 +521,7 @@ namespace SelfServiceMachine.Controllers
                         mzBillId = string.Join(",", orderInfoList.Select(x => x.billid)),
                         time = DateTime.Now,
                         SSFeeNo = fY004.akc190,
+                        SSSerNum = fY004.bke384,
                         recipeCount = orderInfoList.Count.ToString(),
                         mzCategory = "普通",
                         doctorCode = doctor.userno,
@@ -546,6 +557,12 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
+            var ptInfo = ptInfoBLL.GetPtInfoByCardNo("", Convert.ToInt32(settleMZInsurance.model.patCardType), settleMZInsurance.model.patCardNo);
+            if (ptInfo == null)
+            {
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
+            }
+
             var dept = sysDeptBLL.GetDeptByCode(settleMZInsurance.model.deptCode);
             var doctor = sysUserinfoBLL.GetRDoctor(settleMZInsurance.model.doctorCode);
 
@@ -564,18 +581,20 @@ namespace SelfServiceMachine.Controllers
             }
 
             var ybsssno = commKeyBLL.GetYBNO();
+
+            var FeeTrail = feeTrialBLL.Get(x => x.bke384 == settleMZInsurance.model.SSSerNo);
             FY005 fY005 = new FY005()
             {
-                aaz500 = pt_Info.ybidentity,
+                aaz500 = settleMZInsurance.model.socialSecurityNo,
                 bzz269 = settleMZInsurance.model.patCardPwd,
-                akc190 = "HZS10" + regInfo.mzno,
-                aka130 = "11",
-                bkc320 = doctor.ybno,
-                ckc350 = doctor.username,
-                aka030 = "12",
-                akc264 = Math.Round(Convert.ToDecimal(orderInfoList.Sum(x => x.totprice))).ToString(),
-                ckc601 = "0",
-                bke384 = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno
+                akc190 = FeeTrail.akc190,
+                aka130 = FeeTrail.aka130,
+                bkc320 = FeeTrail.bkc320,
+                ckc350 = FeeTrail.ckc350,
+                aka030 = FeeTrail.aka030,
+                akc264 = FeeTrail.akc264.ToString(),
+                ckc601 = FeeTrail.ckc601,
+                bke384 = FeeTrail.bke384
             };
 
             var ybSno = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno;
@@ -590,17 +609,6 @@ namespace SelfServiceMachine.Controllers
             var result = HealthInsuranceHelper.RegTrial<BaseMedInsurance<Entity.SResponse.FY005>>("FY005", version, verify, ybsssno.ToString(), fY005);
             if (result.transReturnCode == "0" || result.transReturnCode == "00000000")
             {
-                feeTrialBLL.Add(new fee_trial()
-                {
-                    akc190 = fY005.akc190,
-                    aka130 = fY005.aka130,
-                    bkc320 = fY005.bkc320,
-                    ckc350 = fY005.ckc350,
-                    aka030 = fY005.aka030,
-                    akc264 = Convert.ToDecimal(fY005.akc264),
-                    ckc601 = fY005.ckc601,
-                    bke384 = fY005.bke384
-                });
 
                 var resultObj = new Entity.SResponse.getMZInsurance()
                 {
@@ -616,7 +624,7 @@ namespace SelfServiceMachine.Controllers
                     doctorCode = doctor.userno,
                     doctorName = doctor.username,
                     payType = "医保",
-                    payAmount = result.transBody.akb067,
+                    payAmount = result.transBody.akb067.ToString(),
                     totalAmout = orderInfoList.Sum(x => x.totprice).ToString(),
                     SSInfoNew = JsonOperator.JsonSerialize(result.transBody)
                 };

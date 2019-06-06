@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SelfServiceMachine.Models.Response
+﻿namespace SelfServiceMachine.Models.Response
 {
+    /// <summary>
+    /// 返回的XML体
+    /// </summary>
     public class rsBaseModel
     {
         /// <summary>
@@ -17,6 +15,9 @@ namespace SelfServiceMachine.Models.Response
         public string resultMessage { get; set; }
     }
 
+    /// <summary>
+    /// 返回XML基类
+    /// </summary>
     public class rsBaseModelP
     {
         /// <summary>

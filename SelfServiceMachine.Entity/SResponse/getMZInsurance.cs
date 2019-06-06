@@ -31,5 +31,6 @@ namespace SelfServiceMachine.Entity.SResponse
         public string insuranceAmount { get; set; }
         public string totalAmout { get; set; }
         public string SSInfoNew { get; set; }
+        public string SSSerNum { get; set; }
     }
 }

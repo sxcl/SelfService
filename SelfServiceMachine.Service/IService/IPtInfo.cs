@@ -1,4 +1,5 @@
 ﻿using SelfServiceMachine.Entity;
+using SelfServiceMachine.Entity.ViewModels;
 using SelfServiceMachine.Model;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,12 @@ namespace SelfServiceMachine.Service.IService
         /// <param name="ids"></param>
         /// <returns></returns>
         bool Dels(dynamic[] ids);
+        /// <summary>
+        /// 获取会员信息
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        List<MembershipModels> GetMembership();
         #endregion
     }
 }

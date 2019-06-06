@@ -6,10 +6,10 @@ namespace SelfServiceMachine.Entity.SResponse
     {
         public string ckc618 { get; set; }
         public string akc264 { get; set; }
-        public string akb068 { get; set; }
-        public string akb066 { get; set; }
-        public string akb067 { get; set; }
-        public string aae240 { get; set; }
+        public decimal akb068 { get; set; }
+        public decimal akb066 { get; set; }
+        public decimal akb067 { get; set; }
+        public decimal aae240 { get; set; }
         public List<outputlistfy0051> outputlist1 { get; set; }
         public List<outputlistfy0052> outputlist2 { get; set; }
         public List<outputlistfy0053> outputlist3 { get; set; }

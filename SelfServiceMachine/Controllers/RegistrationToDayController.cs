@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity;
-using SelfServiceMachine.Entity.Insurance;
 using SelfServiceMachine.Entity.SRequest;
 using SelfServiceMachine.Models.Request;
 using SelfServiceMachine.Models.Response;
@@ -224,7 +223,7 @@ namespace SelfServiceMachine.Controllers
 
 
 
-            var regInfo = reginfoBLL.Get(x => x.doctor == doctor.username && x.dept == dept.name && pt_Info.pid == x.pid && x.status == "候诊");
+            var regInfo = reginfoBLL.Get(x => x.doctor == doctor.username && x.dept == dept.name && pt_Info.pid == x.pid && x.status == "候诊" && x.validate > DateTime.Now);
             if (regInfo != null)
             {
                 return RsXmlHelper.ResXml(-1, "你已挂当前科室号");
@@ -309,13 +308,12 @@ namespace SelfServiceMachine.Controllers
             var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
 
             fee_info.del = false;
-            fee_info.addtime = Convert.ToDateTime(payCurReg.model.payTime);
+            fee_info.addtime = payCurReg.model.payTime == null ? DateTime.Now : Convert.ToDateTime(payCurReg.model.payTime);
             fee_info.amountrec = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
             fee_info.amountcol = Convert.ToDecimal(payCurReg.model.payAmout) / 100;
             fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + Convert.ToDecimal(payCurReg.model.payAmout) / 100 + ",payTime:" + payCurReg.model.payTime + (!string.IsNullOrWhiteSpace(payCurReg.model.SSSerialNo) ? "，自费金额：" + (Convert.ToDecimal(payCurReg.model.payAmout) - Convert.ToDecimal(payCurReg.model.SSMoney)) + "。" : "。");
 
             var feeinfodetails = feeInfodetailBLL.GetFee_Infodetails(fee_info.feeid);
-            feeinfodetails.ForEach(x => x.del = false);
             feeInfodetailBLL.Updates(feeinfodetails);
 
             regInfo.del = false;
@@ -501,7 +499,7 @@ namespace SelfServiceMachine.Controllers
             mz001.inputlist = new List<Entity.SRequest.inputlist5>();
             foreach (var reg_Trialdetail in reg_trialDetails)
             {
-                var inputlist5 = new Entity.SRequest.inputlist5()
+                var inputlist5 = new inputlist5()
                 {
                     aae072 = reg_Trialdetail.aae072,
                     bkf500 = reg_Trialdetail.bkf500,
@@ -530,7 +528,15 @@ namespace SelfServiceMachine.Controllers
             {
                 //reg_Trials.ForEach(x => x.serialNumber = result.serialNumber);
                 //regTrialBLL.Adds(reg_Trials);
-                return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(result.transBody));
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.getClinicalTrial>()
+                {
+                    model = new Entity.SResponse.getClinicalTrial()
+                    {
+                        resultCode = 0,
+                        resultMessage = JsonOperator.JsonSerialize(result.transBody),
+                        SSSerNum = ybSno
+                    }
+                });
             }
             else
             {
@@ -599,7 +605,50 @@ namespace SelfServiceMachine.Controllers
 
             return result.transReturnCode == "0" || result.transReturnCode == "00000000"
                 ? RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(result.transBody))
-                : RsXmlHelper.ResXml(99, "医保结算失败");
+                : RsXmlHelper.ResXml(99, result.transReturnMessage);
+        }
+
+        /// <summary>
+        /// 交易退费
+        /// </summary>
+        /// <param name="tradingrefund"></param>
+        /// <returns></returns>
+        [HttpPost("tradingrefund")]
+        public string TradingRefund(request<Entity.SRequest.JY002> tradingrefund)
+        {
+            var ybsssno = commKeyBLL.GetYBNO();
+            var ybSno = "HZS10" + DateTime.Now.ToString("yyyyMMdd") + ybsssno;
+
+            var getVerifyCodeResult = JsonOperator.JsonDeserialize<Entity.SResponse.getVerifyCode>(HttpHelper.Post("http://192.168.88.134:8300/YBDLL/domain/getVerifyCode", JsonOperator.JsonSerialize(new getVerifyCode() { inParam = "JY002|" + ybSno + "|HZS10|" }), Encoding.UTF8, 1));
+            if (getVerifyCodeResult.resultCode != 0)
+            {
+                return null;
+            }
+
+            var version = getVerifyCodeResult.outParam.Split("|")[2];
+            var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
+            Entity.SRequest.JY002 jY002 = new JY002()
+            {
+                akc190 = tradingrefund.model.akc190,
+                bke384 = tradingrefund.model.bke384
+            };
+
+            var result = HealthInsuranceHelper.RegTrial<BaseMedInsurance<Entity.SResponse.JY002>>("JY002", version, verify, ybsssno.ToString(), jY002);
+            if (result.transReturnCode == "0" || result.transReturnCode == "00000000")
+            {
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.JY002>()
+                {
+                    model = new Entity.SResponse.JY002()
+                    {
+                        resultCode = 0,
+                        resultMessage = JsonOperator.JsonSerialize(result)
+                    }
+                });
+            }
+            else
+            {
+                return RsXmlHelper.ResXml(-1, JsonOperator.JsonSerialize(result));
+            }
         }
     }
 }

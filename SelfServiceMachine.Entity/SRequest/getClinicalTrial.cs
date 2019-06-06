@@ -15,6 +15,9 @@
         //public string endTime { get; set; }
         //public string doctorCode { get; set; }
         //public string deptCode { get; set; }
+        /// <summary>
+        /// 挂号id
+        /// </summary>
         public string hisOrdNum { get; set; }
     }
 }

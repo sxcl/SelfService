@@ -75,6 +75,16 @@ namespace SelfServiceMachine.Controllers
                 return Json("参数为空");
             return Json(bll.Dels(ids));
         }
+
+        /// <summary>
+        /// 会员列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("memlist")]
+        public JsonResult GetMembershipList()
+        {
+            return Json(bll.GetMembershipModels());
+        }
         #endregion
     }
 }

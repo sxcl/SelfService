@@ -1,8 +1,10 @@
 ﻿using SelfServiceMachine.Entity;
+using SelfServiceMachine.Entity.ViewModels;
 using SelfServiceMachine.Model;
 using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -94,6 +96,11 @@ namespace SelfServiceMachine.Bussiness
                 return new MessageModel<pt_info> { Success = true, Msg = "操作成功" };
             else
                 return new MessageModel<pt_info> { Success = false, Msg = "操作失败" };
+        }
+
+        public List<MembershipModels> GetMembershipModels()
+        {
+            return IPtInfo.GetMembership();
         }
     }
 }
