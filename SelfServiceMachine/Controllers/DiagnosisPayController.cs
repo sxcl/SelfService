@@ -257,23 +257,21 @@ namespace SelfServiceMachine.Controllers
             }
             feeInfodetailBLL.Adds(fee_Infodetails);
 
-            if (string.IsNullOrWhiteSpace(ackPayOrder.model.ybjmc) && string.IsNullOrWhiteSpace(ackPayOrder.model.mzlsh)) //自费
+            feeinfoBLL.AddFeechannel(new fee_channel()
+            {
+                feeid = feeid,
+                chnn = ackPayOrder.model.payMode,
+                amount = Convert.ToDecimal(ackPayOrder.model.totalAmout) / 100,
+                del = false,
+                sno = ackPayOrder.model.psOrdNum
+            });
+
+            if (!string.IsNullOrWhiteSpace(ackPayOrder.model.ybjmc) && !string.IsNullOrWhiteSpace(ackPayOrder.model.mzlsh))  //医保
             {
                 feeinfoBLL.AddFeechannel(new fee_channel()
                 {
                     feeid = feeid,
-                    chnn = ackPayOrder.model.payMode,
-                    amount = Convert.ToDecimal(ackPayOrder.model.totalAmout) / 100,
-                    del = false,
-                    sno = ackPayOrder.model.psOrdNum
-                });
-            }
-            else //医保
-            {
-                feeinfoBLL.AddFeechannel(new fee_channel()
-                {
-                    feeid = feeid,
-                    chnn = ackPayOrder.model.payMode,
+                    chnn = "医疗保险",
                     amount = (Convert.ToDecimal(ackPayOrder.model.totalAmout) - Convert.ToDecimal(ackPayOrder.model.payAmout)) / 100,
                     del = false,
                     sno = ackPayOrder.model.mzlsh
@@ -421,6 +419,9 @@ namespace SelfServiceMachine.Controllers
                         bkm017 = commMed.stdcode,
                         ake005 = commMed.itemid,
                         ake006 = commMed.itemname,
+                        akc225 = order_Feedetail.prices.ToString(),
+                        akc264 = order_Feedetail.totalprices.ToString(),
+                        aka067 = commMed.dpunit,
                         aka070 = commYbCodeBLL.GetYbCodeByName("AKA070", commMed.dosage),
                         aka074 = commMed.spec,
                         akc226 = Convert.ToInt32(order_Feedetail.total).ToString(),
@@ -586,7 +587,7 @@ namespace SelfServiceMachine.Controllers
             FY005 fY005 = new FY005()
             {
                 aaz500 = settleMZInsurance.model.socialSecurityNo,
-                bzz269 = settleMZInsurance.model.patCardPwd,
+                bzz269 = string.IsNullOrWhiteSpace(settleMZInsurance.model.patCardPwd) ? "000000" : settleMZInsurance.model.patCardPwd,
                 akc190 = FeeTrail.akc190,
                 aka130 = FeeTrail.aka130,
                 bkc320 = FeeTrail.bkc320,

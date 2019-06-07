@@ -314,6 +314,8 @@ namespace SelfServiceMachine.Controllers
             fee_info.extern_memo = "hisOrdNum:" + payCurReg.model.hisOrdNum + ",psOrdNum:" + payCurReg.model.psOrdNum + ",agtOrdNum:" + payCurReg.model.agtOrdNum + ",agtCode:" + payCurReg.model.agtCode + ",payMode:" + payCurReg.model.payMode + ",payMethod:" + payCurReg.model.payMethod + ",payAmout:" + Convert.ToDecimal(payCurReg.model.payAmout) / 100 + ",payTime:" + payCurReg.model.payTime + (!string.IsNullOrWhiteSpace(payCurReg.model.SSSerialNo) ? "，自费金额：" + (Convert.ToDecimal(payCurReg.model.payAmout) - Convert.ToDecimal(payCurReg.model.SSMoney)) + "。" : "。");
 
             var feeinfodetails = feeInfodetailBLL.GetFee_Infodetails(fee_info.feeid);
+            feeinfodetails.ForEach(x => x.del = false);
+            feeinfodetails.ForEach(x => x.status = 1);
             feeInfodetailBLL.Updates(feeinfodetails);
 
             regInfo.del = false;
