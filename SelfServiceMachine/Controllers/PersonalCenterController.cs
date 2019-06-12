@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NPinyin;
 using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity;
 using SelfServiceMachine.Entity.SlefServiceModels;
-using SelfServiceMachine.Entity.SResponse;
 using SelfServiceMachine.Models.Request;
 using SelfServiceMachine.Models.Response;
 using SelfServiceMachine.Utils;
@@ -149,9 +149,9 @@ namespace SelfServiceMachine.Controllers
             var isAdd = ptInfoBLL.Add(pt_Info);
             if (isAdd != null)
             {
-                return XMLHelper.XmlSerialize(new response<createACard>()
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.createACard>()
                 {
-                    model = new createACard()
+                    model = new Entity.SResponse.createACard()
                     {
                         resultCode = "0",
                         resultMessage = "",
@@ -189,39 +189,101 @@ namespace SelfServiceMachine.Controllers
             {
                 var ptInfo = ptInfoBLL.GetInfoByCard(bindCard.model.PatId, bindCard.model.PatName);
                 var card = cardInfoBLL.GetCardByCno(bindCard.model.patCardNo);
+
+                card_info existCard = null;
+
                 if (card != null && card.pid != null)
                 {
-                    return RsXmlHelper.ResXml(99, "卡号已绑定患者");
+                    if (card.pid == ptInfo.pid)
+                    {
+                        return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(card));
+                    }
+                    else
+                    {
+                        return RsXmlHelper.ResXml(99, "卡号已绑定患者");
+                    }
+                }
+                else if (card != null && card.pid == null)
+                {
+                    card.pid = ptInfo.pid;
+                    cardInfoBLL.UpdateCard(card);
+
+                    ptInfo.cno = card.cno.Trim();
+                    ptInfoBLL.Update(ptInfo);
+
+                    return RsXmlHelper.ResXml(0, "");
                 }
                 else
                 {
-
                     if (ptInfo == null)
                     {
                         return RsXmlHelper.ResXml(99, "患者信息为空");
                     }
-                    cardInfoBLL.CreateCard(new card_info()
+
+                    if (!string.IsNullOrWhiteSpace(ptInfo.cno))
                     {
-                        cno = bindCard.model.patCardNo.Trim(),
-                        pid = ptInfo.pid,
-                        cmoney = 0,
-                        clevel = "银卡",
-                        status = 0,
-                        addperson = "自助机",
-                        addtime = DateTime.Now,
-                        del = false
-                    });
+                        existCard = cardInfoBLL.GetCardByCno(ptInfo.cno);
+                    }
 
-                    ptInfo.cno = bindCard.model.patCardNo.Trim();
-                    ptInfoBLL.Update(ptInfo);
+                    if (existCard == null)
+                    {
+                        cardInfoBLL.CreateCard(new card_info()
+                        {
+                            cno = bindCard.model.patCardNo.Trim(),
+                            pid = ptInfo.pid,
+                            cmoney = 0,
+                            clevel = "银卡",
+                            status = 0,
+                            addperson = "自助机",
+                            addtime = DateTime.Now,
+                            del = false
+                        });
 
-                    return RsXmlHelper.ResXml(0, "");
+                        ptInfo.cno = bindCard.model.patCardNo.Trim();
+                        ptInfoBLL.Update(ptInfo);
+
+                        return RsXmlHelper.ResXml(0, "");
+                    }
+                    else
+                    {
+                        return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(existCard));
+                    }
+                }
+            }
+            else if (bindCard.model.bindType == "S")
+            {
+                var ptInfo = ptInfoBLL.GetInfoByCard(bindCard.model.PatId, bindCard.model.PatName);
+                if (ptInfo == null)
+                {
+                    return RsXmlHelper.ResXml(99, "患者信息为空");
+                }
+                if (!string.IsNullOrWhiteSpace(ptInfo.cno))
+                {
+                    return RsXmlHelper.ResXml(0, "患者已绑定就诊卡");
+                }
+                else
+                {
+                    return RsXmlHelper.ResXml(1, "患者未绑定就诊卡");
                 }
             }
             else //解绑
             {
                 var ptInfo = ptInfoBLL.GetInfoByCard(bindCard.model.PatId, bindCard.model.PatName);
-                var card = cardInfoBLL.GetCardByCno(bindCard.model.patCardNo);
+
+                card_info card = null;
+                if (!string.IsNullOrWhiteSpace(bindCard.model.patCardNo))
+                {
+                    card = cardInfoBLL.GetCardByCno(bindCard.model.patCardNo);
+                }
+                else
+                {
+                    var cardList = cardInfoBLL.GetByPid(ptInfo.pid);
+                    if (cardList != null && cardList.Count > 1)
+                    {
+                        return RsXmlHelper.ResXml(99, "患者绑定多张卡");
+                    }
+                    card = cardList.FirstOrDefault();
+                }
 
                 if (ptInfo == null)
                 {
@@ -231,6 +293,9 @@ namespace SelfServiceMachine.Controllers
                 {
                     return RsXmlHelper.ResXml(99, "卡号为空或卡号绑定其他患者");
                 }
+
+                ptInfo.cno = null;
+                ptInfoBLL.Update(ptInfo);
 
                 card.pid = null;
                 cardInfoBLL.UpdateCard(card);
@@ -246,14 +311,6 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("CardDeposit")]
         public string CardDeposit([FromBody]request<Entity.SlefServiceModels.CardDeposit> CardDeposit)
         {
-            //var reader = new StreamReader(Request.Body);
-            //var contentFromBody = reader.ReadToEnd();
-            //if (string.IsNullOrWhiteSpace(CardDepositXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var CardDeposit = XMLHelper.DESerializer<request<Entity.SlefServiceModels.CardDeposit>>(CardDepositXML);
             if (CardDeposit == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -264,8 +321,15 @@ namespace SelfServiceMachine.Controllers
             {
                 return RsXmlHelper.ResXml(-1, "卡号为空");
             }
-            feeinfoBLL.DepositFeeinfo(Convert.ToInt32(cardinfo.pid), 0, Convert.ToDecimal(CardDeposit.model.czje), Convert.ToDecimal(CardDeposit.model.czje), 89757, "自助机", CardDeposit.model.czdsfdh, CardDeposit.model.type, out int feeid);
+            var pt_Info = ptInfoBLL.GetPt_Info(x => x.pid == cardinfo.pid);
+            if (pt_Info == null)
+            {
+                return RsXmlHelper.ResXml(-1, "患者信息为空");
+            }
+
+            feeinfoBLL.DepositFeeinfo(Convert.ToInt32(cardinfo.pid), 0, Convert.ToDecimal(CardDeposit.model.czje), Convert.ToDecimal(CardDeposit.model.czje), 89757, "自助机", CardDeposit.model.czkh, CardDeposit.model.type, out int feeid);
             var cardinfoDeposit = cardInfoBLL.CardDeposit(CardDeposit.model.czkh, CardDeposit.model.czrsfzh, CardDeposit.model.czrjzkhr, Convert.ToDecimal(CardDeposit.model.czje), CardDeposit.model.czdh, CardDeposit.model.czdsfdh, CardDeposit.model.xm, CardDeposit.model.type, feeid);
+
 
             if (cardinfoDeposit == null)
             {
@@ -273,18 +337,62 @@ namespace SelfServiceMachine.Controllers
             }
             else
             {
-                return XMLHelper.XmlSerialize(new response<cardDeposit>()
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.cardDeposit>()
                 {
-                    model = new cardDeposit()
+                    model = new Entity.SResponse.cardDeposit()
                     {
                         resultCode = 0,
                         resultMessage = "",
                         czzh = cardinfoDeposit.cno,
                         czye = CardDeposit.model.czje,
-                        czhzhye = cardinfoDeposit.cmoney.ToString()
+                        czhzhye = cardinfoDeposit.cmoney.ToString(),
+                        name = pt_Info.pname,
+                        idcard = pt_Info.idno
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// 获取会员卡信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("memberinfo")]
+        public string MembershipCardInfo(request<Entity.SRequest.MemberShipInfo> memberShipInfo)
+        {
+            if (memberShipInfo == null)
+            {
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
+            }
+
+            var cardInfo = cardInfoBLL.GetCardByCno(memberShipInfo.model.czkh);
+            if (cardInfo == null)
+            {
+                return RsXmlHelper.ResXml(-1, "卡号信息不存在");
+            }
+            else if (cardInfo.pid == null || cardInfo.pid == 0 || cardInfo.del == true)
+            {
+                return RsXmlHelper.ResXml(99, "该卡暂未绑定患者");
+            }
+
+            var ptInfo = ptInfoBLL.GetPt_Info(x => x.pid == cardInfo.pid);
+            if (ptInfo == null || ptInfo.del == true)
+            {
+                return RsXmlHelper.ResXml(-1, "患者信息已被删除");
+            }
+
+            return XMLHelper.XmlSerialize(new response<Entity.SResponse.MemberShipInfo>()
+            {
+                model = new Entity.SResponse.MemberShipInfo()
+                {
+                    ResultCode = 0,
+                    ResultMessage = "",
+                    Idcardh = ptInfo.idno,
+                    Name = ptInfo.pname,
+                    Sex = ptInfo.sex == "男" ? "M" : "F",
+                    Ye = Convert.ToDecimal(cardInfo.cmoney * 100),
+                }
+            });
         }
     }
 }

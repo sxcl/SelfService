@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SelfServiceMachine.Bussiness;
+using SelfServiceMachine.Bussiness.Immunity;
+using SelfServiceMachine.Bussiness.Ivf;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity;
 using SelfServiceMachine.Entity.SRequest;
@@ -189,12 +191,14 @@ namespace SelfServiceMachine.Controllers
             {
                 orderInfoList = orderInfoBLL.GetOrderByRegId(Convert.ToInt32(ackPayOrder.model.mzFeeIdList));
             }
-            if (orderInfoList.Where(x => x.feestatus == "已收费") != null && orderInfoList.Where(x => x.feestatus == "已收费").Count() > 0)
+
+            var totalAmount = 0M;
+            if (orderInfoList.Where(x => x.feestatus == "未收费").Count() > 0)
             {
-                return RsXmlHelper.ResXml(1, "本次缴费包含已缴费的处方单");
+                totalAmount = Convert.ToInt32(orderInfoList.Sum(x => x.totprice));
             }
 
-            if (Convert.ToDecimal(ackPayOrder.model.totalAmout) < orderInfoList.Sum(x => x.totprice))
+            if (Convert.ToDecimal(ackPayOrder.model.totalAmout) < totalAmount)
             {
                 return RsXmlHelper.ResXml(1, "支付金额小于订单总金额");
             }
@@ -204,10 +208,20 @@ namespace SelfServiceMachine.Controllers
 
             var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(orderInfoList.FirstOrDefault().regid));//挂号信息
 
+            ImmunityBLL immunityBLL = new ImmunityBLL();
+            IvfBLL ivfBLL = new IvfBLL();
             foreach (var orderInfo in orderInfoList)
             {
                 orderInfo.feetime = DateTime.Now;
                 orderInfo.feestatus = "已收费";
+                if (orderInfo.extern_source == "ivf")
+                {
+                    ivfBLL.SetIvfToll(orderInfo.billid, orderInfo.extern_source);
+                }
+                else if (orderInfo.extern_source == "immunity")
+                {
+                    immunityBLL.SetImmunityToll(orderInfo.billid, orderInfo.extern_source);
+                }
             }
             orderInfoBLL.Updates(orderInfoList);
 
@@ -421,10 +435,10 @@ namespace SelfServiceMachine.Controllers
                         ake006 = commMed.itemname,
                         akc225 = order_Feedetail.prices.ToString(),
                         akc264 = order_Feedetail.totalprices.ToString(),
-                        aka067 = commMed.dpunit,
+                        aka067 = commMed.bscunit,
                         aka070 = commYbCodeBLL.GetYbCodeByName("AKA070", commMed.dosage),
                         aka074 = commMed.spec,
-                        akc226 = Convert.ToInt32(order_Feedetail.total).ToString(),
+                        akc226 = (Convert.ToInt32(order_Feedetail.total) * Convert.ToInt32(order_Feedetail.dppack)).ToString(),
                         akc271 = Convert.ToDateTime(order_Feedetail.addtime).ToString("yyyyMMdd"),
                         bkc320 = doctor.ybno
                     });

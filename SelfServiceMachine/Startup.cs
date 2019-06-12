@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -81,10 +82,12 @@ namespace SelfServiceMachine
             });
             #endregion
 
-            services.AddMvc(o =>
+            services.Configure<ForwardedHeadersOptions>(options =>
             {
+                options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
+            });
 
-            }).AddXmlSerializerFormatters().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().AddXmlSerializerFormatters().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         /// <summary>
@@ -94,11 +97,18 @@ namespace SelfServiceMachine
         /// <param name="env"></param>
         /// <param name="loggerFactory"></param>
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog(); //添加NLog
             //引入NLog配置文件
             env.ConfigureNLog("nlog.config");
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions()
+            {
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+            });
+
+            app.UseAuthentication();
 
             if (env.IsDevelopment())
             {

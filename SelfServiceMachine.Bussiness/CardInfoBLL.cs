@@ -2,6 +2,7 @@
 using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
 using System;
+using System.Collections.Generic;
 
 namespace SelfServiceMachine.Bussiness
 {
@@ -55,6 +56,11 @@ namespace SelfServiceMachine.Bussiness
             {
                 return null;
             }
+        }
+
+        public List<card_info> GetByPid(int pid)
+        {
+            return ICardinfo.GetList(x => x.pid == pid);
         }
     }
 }

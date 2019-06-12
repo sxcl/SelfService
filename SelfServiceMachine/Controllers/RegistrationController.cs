@@ -82,7 +82,7 @@ namespace SelfServiceMachine.Controllers
         /// <param name="GetRegDoctors"></param>
         /// <returns></returns>
         [HttpPost("getRegDoctors")]
-        public string getRegDoctors(request<Entity.SRequest.getRegDoctors> GetRegDoctors)
+        public string GetRegDoctors(request<Entity.SRequest.getRegDoctors> GetRegDoctors)
         {
             //if (string.IsNullOrWhiteSpace(getRegDoctorsXML))
             //{
@@ -120,7 +120,7 @@ namespace SelfServiceMachine.Controllers
         /// <param name="getDeptReg"></param>
         /// <returns></returns>
         [HttpPost("getDeptReg")]
-        public string getDeptReg(request<Entity.SRequest.getDeptReg> getDeptReg)
+        public string GetDeptReg(request<Entity.SRequest.getDeptReg> getDeptReg)
         {
             //if (string.IsNullOrWhiteSpace(getDeptRegXML))
             //{
