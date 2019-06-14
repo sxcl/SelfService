@@ -11,5 +11,29 @@ namespace SelfServiceMachine.Common
             int m_Age = m_Y2 - m_Y1;
             return m_Age;
         }
+
+        public static string ZeroFill(int number)
+        {
+            if (number > 10000000)
+            {
+                return number.ToString();
+            }
+            else
+            {
+                return number.ToString().PadLeft(8, '0'); //一共8位,位数不够时从左边开始用0补
+            }
+        }
+
+        public static string ZeroFill(string number)
+        {
+            if (number.Length > 8)
+            {
+                return number;
+            }
+            else
+            {
+                return number.ToString().PadLeft(8, '0'); //一共8位,位数不够时从左边开始用0补
+            }
+        }
     }
 }

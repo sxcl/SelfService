@@ -106,12 +106,6 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("getCurRegInfo")]
         public string GetCurRegInfo(request<Entity.SRequest.getCurRegInfo> getCurRegInfo)
         {
-            //if (string.IsNullOrWhiteSpace(getCurRegInfoXml))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var getCurRegInfo = XMLHelper.DESerializer<request<Entity.SRequest.getCurRegInfo>>(getCurRegInfoXml);
             if (getCurRegInfo == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -149,12 +143,6 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("getCurDocTime")]
         public string GetCurDocTime(request<Entity.SRequest.getCurDocTime> getCurDocTimeInfo)
         {
-            //if (string.IsNullOrWhiteSpace(getCurDocTimeXml))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var getCurDocTimeInfo = XMLHelper.DESerializer<request<Entity.SRequest.getCurDocTime>>(getCurDocTimeXml);
             if (getCurDocTimeInfo == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -297,8 +285,6 @@ namespace SelfServiceMachine.Controllers
             }
 
             string floor = "";
-            //if (payCurReg.model.payMethod == "1") //自费
-            //{
             var regInfo = reginfoBLL.GetReg_Info(Convert.ToInt32(payCurReg.model.hisOrdNum));
             if (regInfo == null)
             {
@@ -347,11 +333,6 @@ namespace SelfServiceMachine.Controllers
                     sno = payCurReg.model.SSSerialNo
                 });
             }
-            //}
-            //else //医保
-            //{
-
-            //}
 
             return XMLHelper.XmlSerialize(new response<Entity.SResponse.payCurReg>()
             {
@@ -372,12 +353,6 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("cancelCurReg")]
         public string CancelCurReg(request<cancelCurReg> cancelCurReg)
         {
-            //if (string.IsNullOrWhiteSpace(cancelCurRegXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var cancelCurReg = XMLHelper.DESerializer<request<cancelCurReg>>(cancelCurRegXML);
             if (cancelCurReg == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
@@ -528,8 +503,6 @@ namespace SelfServiceMachine.Controllers
             var result = HealthInsuranceHelper.RegTrial<Entity.SResponse.pre_settlement>("MZ001", version, verify, ybsssno.ToString(), mz001);
             if (result.transReturnCode == "0" || result.transReturnCode == "00000000")
             {
-                //reg_Trials.ForEach(x => x.serialNumber = result.serialNumber);
-                //regTrialBLL.Adds(reg_Trials);
                 return XMLHelper.XmlSerialize(new response<Entity.SResponse.getClinicalTrial>()
                 {
                     model = new Entity.SResponse.getClinicalTrial()

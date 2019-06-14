@@ -122,6 +122,19 @@
             }
         }
 
+        public static string GetDepositType(string type)
+        {
+            switch (type)
+            {
+                case "微信":
+                    return "1";
+                case "支付宝":
+                    return "2";
+                default:
+                    return "3";
+            }
+        }
+
         public static int SwichRegType(string regType)
         {
             switch (regType)

@@ -101,6 +101,11 @@ namespace SelfServiceMachine.Service.Service
             return sdb.Delete<T>(id
                 );
         }
+
+        public int AddReturnId(T entity)
+        {
+            return db.Insertable<T>(entity).ExecuteReturnIdentity();
+        }
         #endregion
     }
 }

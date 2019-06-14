@@ -44,6 +44,12 @@ namespace SelfServiceMachine.Service.IService
         /// <returns></returns>
         bool Adds(T[] entity);
         /// <summary>
+        /// 批量添加
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        int AddReturnId(T entity);
+        /// <summary>
         /// 编辑
         /// </summary>
         /// <param name="entity"></param>

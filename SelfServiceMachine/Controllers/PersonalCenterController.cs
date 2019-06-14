@@ -41,21 +41,10 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("getMZPatient")]
         public string GetMZPatient([FromBody]request<GetMZPatient> getMZPatient)
         {
-            //if (string.IsNullOrWhiteSpace(getMZPatientXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var getMZPatient = XMLHelper.DESerializer<request<GetMZPatient>>(getMZPatientXML);
             if (getMZPatient == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
-
-            //if (getMZPatient.model.patCardType == 5 && string.IsNullOrWhiteSpace(getMZPatient.model.patName))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "当诊疗卡类型为身份证时，患者姓名不能为空");
-            //}
 
             var pt_Info = ptInfoBLL.GetPtInfoByCardNo(getMZPatient.model.patName, getMZPatient.model.patCardType, getMZPatient.model.patCardNo);
             if (pt_Info == null)
@@ -327,8 +316,8 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml(-1, "患者信息为空");
             }
 
-            feeinfoBLL.DepositFeeinfo(Convert.ToInt32(cardinfo.pid), 0, Convert.ToDecimal(CardDeposit.model.czje), Convert.ToDecimal(CardDeposit.model.czje), 89757, "自助机", CardDeposit.model.czkh, CardDeposit.model.type, out int feeid);
-            var cardinfoDeposit = cardInfoBLL.CardDeposit(CardDeposit.model.czkh, CardDeposit.model.czrsfzh, CardDeposit.model.czrjzkhr, Convert.ToDecimal(CardDeposit.model.czje), CardDeposit.model.czdh, CardDeposit.model.czdsfdh, CardDeposit.model.xm, CardDeposit.model.type, feeid);
+            feeinfoBLL.DepositFeeinfo(Convert.ToInt32(cardinfo.pid), 0, Convert.ToDecimal(CardDeposit.model.czje) / 100, Convert.ToDecimal(CardDeposit.model.czje) / 100, 89757, "自助机", CardDeposit.model.czkh, CardDeposit.model.type, out int feeid);
+            var cardinfoDeposit = cardInfoBLL.CardDeposit(CardDeposit.model.czkh, CardDeposit.model.czrsfzh, CardDeposit.model.czrjzkhr, Convert.ToDecimal(CardDeposit.model.czje) / 100, CardDeposit.model.czdh, CardDeposit.model.czdsfdh, CardDeposit.model.xm, CardDeposit.model.type, feeid);
 
 
             if (cardinfoDeposit == null)
