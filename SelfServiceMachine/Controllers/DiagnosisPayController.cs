@@ -213,7 +213,7 @@ namespace SelfServiceMachine.Controllers
                 totalAmount = Convert.ToDecimal(orderInfoList.Sum(x => x.totprice));
             }
 
-            if (Convert.ToDecimal(ackPayOrder.model.payAmout) / 100 != totalAmount)
+            if (Convert.ToDecimal(ackPayOrder.model.totalAmout) / 100 != totalAmount)
             {
                 return RsXmlHelper.ResXml(1, "支付金额小于订单总金额");
             }

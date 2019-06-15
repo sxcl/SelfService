@@ -90,9 +90,9 @@ namespace SelfServiceMachine.Controllers
                     totalFee = (inInsurance != null ? inInsurance.ttprice : List.Sum(x => x.costAmout)) * 100,
                     medicareFee = (inInsurance != null ? inInsurance.fundttprice : 0) * 100,
                     selfFee = (inInsurance != null ? inInsurance.selfprice : List.Sum(x => x.costAmout)) * 100,
-                    payedFee = (feedetailList.Count > 0 ? feedetailList.Sum(x => x.totalprice) : 0) * 100,
-                    leftPreFee = (feeDeposit != null ? feeDeposit.leftprice : 0) * 100,
-                    leftFee = (inFeedetailBLL.GetNotPay(inReginfo.inid)) * 100,
+                    payedFee = feeDeposit.totalprice * 100,
+                    leftPreFee = (feeDeposit.totalprice - List.Sum(x => x.costAmout)) * 100,
+                    leftFee = (List.Sum(x => x.costAmout) - feeDeposit.totalprice) * 100,
                     items = List
                 }
             });
