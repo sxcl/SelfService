@@ -12,11 +12,6 @@ namespace SelfServiceMachine.Service.Service
 {
     public class FeeinfoService : BaseService<fee_info>, IFeeinfo
     {
-        public int AddReturnId(fee_info fee_Info)
-        {
-            return db.Insertable(fee_Info).ExecuteReturnIdentity();
-        }
-
         public fee_info GetFee_InfoByRegTrial(int feeid)
         {
             return Get(x => x.feeid == feeid && x.ftype == 2);

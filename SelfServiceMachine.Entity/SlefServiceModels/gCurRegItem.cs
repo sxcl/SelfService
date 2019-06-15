@@ -16,7 +16,7 @@ namespace SelfServiceMachine.Entity.SlefServiceModels
         public string doctorBirth { get; set; }
         public string doctorSkill { get; set; }
         public string picture { get; set; }
-        [XmlArray("noface"), XmlArrayItem("item")]
+        [XmlElement("item")]
         public List<TimeItems> item { get; set; }
     }
 
@@ -32,7 +32,7 @@ namespace SelfServiceMachine.Entity.SlefServiceModels
         public string doctorSkill { get; set; }
         public string picture { get; set; }
         public int regtid { get; set; }
-        [XmlArray("noface"), XmlArrayItem("item")]
+        [XmlElement("item")]
         public List<TimeItems> item { get; set; }
     }
 

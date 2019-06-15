@@ -56,7 +56,7 @@ namespace SelfServiceMachine.Entity
            /// Default:
            /// Nullable:True
            /// </summary>           
-           public string sno {get;set;}
+           public string chnnsno {get;set;}
 
     }
 }

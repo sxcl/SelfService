@@ -9,7 +9,7 @@ namespace SelfServiceMachine.Entity.SResponse
     {
         public int resultCode { get; set; }
         public string resultMessage { get; set; }
-        [XmlArray("noface"), XmlArrayItem("collections")]
+        [XmlElement("collections")]
         public List<AdogCurRegItem> item { get; set; }
     }
 
@@ -25,7 +25,7 @@ namespace SelfServiceMachine.Entity.SResponse
         public string doctorSkill { get; set; }
         public string picture { get; set; }
         public int regtid { get; set; }
-        [XmlArray("noface"), XmlArrayItem("item")]
+        [ XmlElement("item")]
         public List<TimeItems> item { get; set; }
     }
 

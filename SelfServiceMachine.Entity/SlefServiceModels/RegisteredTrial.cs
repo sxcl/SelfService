@@ -16,7 +16,7 @@ namespace SelfServiceMachine.Entity.SlefServiceModels
         public string akc189 { get; set; }
         public string akc264 { get; set; }
         public int listsize { get; set; }
-        [XmlArray("noface"),XmlArrayItem("input")]
+        [XmlElement("input")]
         public List<Trial> inputlist { get; set; }
     }
 

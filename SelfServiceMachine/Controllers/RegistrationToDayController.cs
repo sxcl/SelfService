@@ -318,7 +318,7 @@ namespace SelfServiceMachine.Controllers
                     chnn = payCurReg.model.payMode,
                     amount = (Convert.ToDecimal(payCurReg.model.payAmout) - Convert.ToDecimal(payCurReg.model.SSMoney)) / 100,
                     del = false,
-                    sno = payCurReg.model.psOrdNum
+                    chnnsno = payCurReg.model.psOrdNum
                 });
             }
 
@@ -330,7 +330,7 @@ namespace SelfServiceMachine.Controllers
                     chnn = "医疗保险",
                     amount = Convert.ToDecimal(payCurReg.model.SSMoney) / 100,
                     del = false,
-                    sno = payCurReg.model.SSSerialNo
+                    chnnsno = payCurReg.model.SSSerialNo
                 });
             }
 

@@ -12,7 +12,7 @@ namespace SelfServiceMachine.Bussiness
     {
         private IOrderinfo iOrderinfo = new OrderinfoService();
 
-        public List<Entity.SResponse.MZFeeList> GetMZFeeLists(int cardType, string cardNo,string beginDate,string endDate)
+        public List<Entity.SResponse.MZFeeList> GetMZFeeLists(int cardType, string cardNo, string beginDate, string endDate)
         {
             var para = CodeConvertUtils.GetCardTypeByType(cardType);
             para += " = '" + cardNo + "'";
@@ -47,7 +47,7 @@ namespace SelfServiceMachine.Bussiness
 
         public List<order_info> GetOrderByRegId(int regid)
         {
-            return iOrderinfo.GetList(x => x.regid == regid);
+            return iOrderinfo.GetList(x => x.regid == regid).Where(x => x.feestatus == "未收费").ToList();
         }
 
         public bool Updates(List<order_info> orderInfoList)

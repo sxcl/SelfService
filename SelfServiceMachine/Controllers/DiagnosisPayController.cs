@@ -176,6 +176,21 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
 
+            var feeInfo = feeinfoBLL.Get(ackPayOrder.model.agtOrdNum);
+            if (feeInfo != null)
+            {
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.ackPayOrder>()
+                {
+                    model = new Entity.SResponse.ackPayOrder()
+                    {
+                        resultCode = 0,
+                        resultMessage = "",
+                        hisOrdNum = feeInfo.feeid.ToString(),
+                        hisMessage = "支付成功"
+                    }
+                });
+            }
+
             var orderList = orderInfoBLL.GetHasOrderByRegid(ackPayOrder.model.mzFeeIdList);
             if (!orderList) //判断是否有医嘱单号
             {
@@ -195,10 +210,10 @@ namespace SelfServiceMachine.Controllers
             var totalAmount = 0M;
             if (orderInfoList.Where(x => x.feestatus == "未收费").Count() > 0)
             {
-                totalAmount = Convert.ToInt32(orderInfoList.Sum(x => x.totprice));
+                totalAmount = Convert.ToDecimal(orderInfoList.Sum(x => x.totprice));
             }
 
-            if (Convert.ToDecimal(ackPayOrder.model.totalAmout) < totalAmount)
+            if (Convert.ToDecimal(ackPayOrder.model.payAmout) / 100 != totalAmount)
             {
                 return RsXmlHelper.ResXml(1, "支付金额小于订单总金额");
             }
@@ -277,7 +292,7 @@ namespace SelfServiceMachine.Controllers
                 chnn = ackPayOrder.model.payMode,
                 amount = Convert.ToDecimal(ackPayOrder.model.totalAmout) / 100,
                 del = false,
-                sno = ackPayOrder.model.psOrdNum
+                chnnsno = ackPayOrder.model.psOrdNum
             });
 
             if (!string.IsNullOrWhiteSpace(ackPayOrder.model.ybjmc) && !string.IsNullOrWhiteSpace(ackPayOrder.model.mzlsh))  //医保
@@ -288,7 +303,7 @@ namespace SelfServiceMachine.Controllers
                     chnn = "医疗保险",
                     amount = (Convert.ToDecimal(ackPayOrder.model.totalAmout) - Convert.ToDecimal(ackPayOrder.model.payAmout)) / 100,
                     del = false,
-                    sno = ackPayOrder.model.mzlsh
+                    chnnsno = ackPayOrder.model.mzlsh
                 });
             }
             return XMLHelper.XmlSerialize(new response<Entity.SResponse.ackPayOrder>()

@@ -7,6 +7,5 @@ namespace SelfServiceMachine.Service.IService
 {
     public interface IRegTrial : IBase<reg_trial>
     {
-        int AddReturnId(reg_trial reg_Trial);
     }
 }

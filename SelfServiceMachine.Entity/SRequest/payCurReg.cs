@@ -54,7 +54,7 @@ namespace SelfServiceMachine.Entity.SRequest
         /// <summary>
         /// 社保支付结果串
         /// </summary>
-        [XmlArray("SSItems"), XmlArrayItem("Item")]
+        [XmlElement("Item")]
         public List<SSItems> item { get; set; }
     }
 

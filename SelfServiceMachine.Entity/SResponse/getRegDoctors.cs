@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace SelfServiceMachine.Entity.SResponse
@@ -9,7 +7,7 @@ namespace SelfServiceMachine.Entity.SResponse
     {
         public int resultCode { get; set; }
         public string resultMessage { get; set; }
-        [XmlArray("noface"), XmlArrayItem("item")]
+        [XmlElement("item")]
         public List<rDoctorItem> item { get; set; }
     }
 

@@ -121,5 +121,10 @@ namespace SelfServiceMachine.Bussiness
         {
             return iFeeinfo.GetPayItems(pid);
         }
+
+        public fee_info Get(string sno)
+        {
+            return iFeeinfo.Get(x => x.sno == sno);
+        }
     }
 }

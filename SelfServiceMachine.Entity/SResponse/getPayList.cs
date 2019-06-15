@@ -7,7 +7,7 @@ namespace SelfServiceMachine.Entity.SResponse
     {
         public int resultCode { get; set; }
         public string resultMessage { get; set; }
-        [XmlArray("noface"), XmlArrayItem("item")]
+        [XmlElement("item")]
         public List<getPayItem> item { get; set; }
     }
 
