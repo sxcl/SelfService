@@ -16,7 +16,7 @@ namespace SelfServiceMachine.Bussiness
         private IFeeinfo iFeeinfo = new FeeinfoService();
         private IFeeinfodetail iFeeinfodetail = new FeeinfodetailService();
 
-        public reg_info Add(reg_info reg_Info, pt_info pt_Info, reg_arrange reg_Arrange, string sno, out decimal amount, out int mzno, out int feeid, out List<comm_fee> commFees)
+        public reg_info Add(reg_info reg_Info, pt_info pt_Info, reg_arrange reg_Arrange, string sno, string psOrdNum, out decimal amount, out int mzno, out int feeid, out List<comm_fee> commFees)
         {
             reg_Info.pid = pt_Info.pid;
             reg_Info.argid = reg_Arrange.argid;
@@ -44,6 +44,7 @@ namespace SelfServiceMachine.Bussiness
             reg_Info.status = "候诊";
             reg_Info.addtime = DateTime.Now;
             reg_Info.del = true;
+            reg_Info.doctor2 = reg_Arrange.doctor;
 
             var sysdictList = iReginfo.GetSysDict("SELECT [id] ,[fid] ,[code] ,[type] ,[detail] ,[sortno] ,[memo] ,[status] ,[del] ,[addtime] ,[moditime] ,[addperson] ,[fth] FROM [ZSHIS].[dbo].[sys_dict] where fid = 13999");
 
@@ -65,7 +66,7 @@ namespace SelfServiceMachine.Bussiness
             }
             else
             {
-                validate = Convert.ToDateTime(DateTime.Now.AddDays(memo).ToShortDateString() + " 23:59:59");
+                validate = Convert.ToDateTime(DateTime.Now.AddDays(memo - 1).ToShortDateString() + " 23:59:59");
             }
 
             var isCommQuery = "SELECT TOP 1 [iscomm] FROM [ZSHIS].[dbo].[reg_type] inner join reg_manage on reg_type.regtid = reg_manage.regtid where reg_type.del = 0 and reg_manage.del = 0 and mgrid = " + reg_Arrange.mgrid;
@@ -96,7 +97,7 @@ namespace SelfServiceMachine.Bussiness
                 feeidoff = 0,
                 del = true,
                 status = 0,
-                sno = sno
+                sno = psOrdNum
             };
 
             feeid = iFeeinfo.AddReturnId(fee_Info);

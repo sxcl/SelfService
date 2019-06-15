@@ -14,18 +14,7 @@ namespace SelfServiceMachine.Bussiness
         {
             var list = Iregarrange.GetReg_arrange(dept, beginDate, endDate);
 
-            List<Entity.SResponse.DeptRegItem> deptRegItems = new List<Entity.SResponse.DeptRegItem>();
-            foreach (var li in list)
-            {
-                deptRegItems.Add(new Entity.SResponse.DeptRegItem()
-                {
-                    scheduleDate = li.bookdate.ToString(),
-                    totalNum = Convert.ToInt32(li.qty),
-                    leftNum = Iregarrange.GetRegArr(li.dept, li.bookdate.ToString(), li.regtype, li.doctor, li.itemid.ToString())
-                });
-            }
-
-            return deptRegItems;
+            return list;
         }
 
         public reg_arrange GetReg_Arrange(int argid)

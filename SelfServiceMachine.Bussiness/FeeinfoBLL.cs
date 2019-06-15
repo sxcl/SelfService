@@ -45,6 +45,7 @@ namespace SelfServiceMachine.Bussiness
                 feeid = feeid,
                 chnn = type,
                 amount = amountcol,
+                chnnsno = sno,
                 del = false
             });
         }

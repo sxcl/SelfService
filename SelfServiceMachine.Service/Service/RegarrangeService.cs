@@ -13,11 +13,11 @@ namespace SelfServiceMachine.Service.Service
     public class RegarrangeService : BaseService<reg_arrange>, IRegarrange
     {
 
-        public List<reg_manage> GetReg_arrange(string dept, string beginDate, string endDate)
+        public List<Entity.SResponse.DeptRegItem> GetReg_arrange(string dept, string beginDate, string endDate)
         {
-            var query = "select regtype,dept,doctor,itemid,bookdate,SUM(qty) as qty from reg_manage where DATEDIFF(DAY,bookdate,@beginDate) <= 0 and DATEDIFF(DAY,bookdate,@endDate) >= 0 and gstatus = 1 and dept = @dept group by regtype,dept,doctor,itemid,bookdate";
+            var query = "select r.bookdate as scheduleDate,COUNT(r.argid) as totalNum,SUM(case when r.regno = 0 then 1 else 0 end) as leftNum from reg_arrange r WITH(NOLOCK) where r.dept = @dept and DATEDIFF(DAY,bookdate,@beginDate) <= 0 and DATEDIFF(DAY,bookdate,@endDate) >= 0 group by r.bookdate,r.mgrid";
 
-            return db.Ado.SqlQuery<reg_manage>(query, new { dept, beginDate, endDate });
+            return db.Ado.SqlQuery<Entity.SResponse.DeptRegItem>(query, new { dept, beginDate, endDate });
         }
 
         public int GetRegArr(string dept, string date, string regtype, string doctor, string itemid)

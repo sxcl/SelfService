@@ -47,7 +47,7 @@ namespace SelfServiceMachine.Controllers
             }
 
             var pt_Info = ptInfoBLL.GetPtInfoByCardNo(getMZPatient.model.patName, getMZPatient.model.patCardType, getMZPatient.model.patCardNo);
-            if (pt_Info == null)
+            if (pt_Info == null || pt_Info.del == true)
             {
                 return RsXmlHelper.ResXml(1, "患者信息为空");
             }
@@ -304,19 +304,38 @@ namespace SelfServiceMachine.Controllers
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");
             }
-
             var cardinfo = cardInfoBLL.GetCardByCno(CardDeposit.model.czkh);
             if (cardinfo == null && cardinfo.pid != null)
             {
                 return RsXmlHelper.ResXml(-1, "卡号为空");
             }
+
             var pt_Info = ptInfoBLL.GetPt_Info(x => x.pid == cardinfo.pid);
             if (pt_Info == null)
             {
                 return RsXmlHelper.ResXml(-1, "患者信息为空");
             }
 
-            feeinfoBLL.DepositFeeinfo(Convert.ToInt32(cardinfo.pid), 0, Convert.ToDecimal(CardDeposit.model.czje) / 100, Convert.ToDecimal(CardDeposit.model.czje) / 100, 89757, "自助机", CardDeposit.model.czkh, CardDeposit.model.type, out int feeid);
+            var feeinfo = feeinfoBLL.Get(CardDeposit.model.czdh);
+            if (feeinfo != null)
+            {
+                return XMLHelper.XmlSerialize(new response<Entity.SResponse.cardDeposit>()
+                {
+                    model = new Entity.SResponse.cardDeposit()
+                    {
+                        resultCode = 0,
+                        resultMessage = "",
+                        czzh = CardDeposit.model.czkh,
+                        czye = CardDeposit.model.czje,
+                        czhzhye = (cardinfo.cmoney * 100).ToString(),
+                        name = pt_Info.pname,
+                        idcard = pt_Info.idno
+                    }
+                });
+            }
+
+            feeinfoBLL.DepositFeeinfo(Convert.ToInt32(cardinfo.pid), 0, Convert.ToDecimal(CardDeposit.model.czje) / 100, Convert.ToDecimal(CardDeposit.model.czje) / 100, 89757, "自助机", CardDeposit.model.czdh, CardDeposit.model.type, out int feeid);
+
             var cardinfoDeposit = cardInfoBLL.CardDeposit(CardDeposit.model.czkh, CardDeposit.model.czrsfzh, CardDeposit.model.czrjzkhr, Convert.ToDecimal(CardDeposit.model.czje) / 100, CardDeposit.model.czdh, CardDeposit.model.czdsfdh, CardDeposit.model.xm, CardDeposit.model.type, feeid);
 
 
@@ -334,7 +353,7 @@ namespace SelfServiceMachine.Controllers
                         resultMessage = "",
                         czzh = cardinfoDeposit.cno,
                         czye = CardDeposit.model.czje,
-                        czhzhye = cardinfoDeposit.cmoney.ToString(),
+                        czhzhye = (cardinfoDeposit.cmoney * 100).ToString(),
                         name = pt_Info.pname,
                         idcard = pt_Info.idno
                     }

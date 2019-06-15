@@ -98,8 +98,7 @@ namespace SelfServiceMachine.Service.Service
 
         public bool Del(dynamic id)
         {
-            return sdb.Delete<T>(id
-                );
+            return sdb.DeleteById<T>(id);
         }
 
         public int AddReturnId(T entity)

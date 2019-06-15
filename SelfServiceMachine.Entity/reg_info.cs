@@ -219,5 +219,12 @@ namespace SelfServiceMachine.Entity
            /// </summary>           
            public bool? iscomm {get;set;}
 
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string doctor2 {get;set;}
+
     }
 }
