@@ -127,5 +127,10 @@ namespace SelfServiceMachine.Bussiness
         {
             return iFeeinfo.Get(x => x.sno == sno);
         }
+
+        public fee_info Get(Expression<Func<fee_info, bool>> whereLambda)
+        {
+            return iFeeinfo.Get(whereLambda);
+        }
     }
 }

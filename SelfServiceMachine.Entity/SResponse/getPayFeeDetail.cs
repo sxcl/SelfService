@@ -21,6 +21,7 @@ namespace SelfServiceMachine.Entity.SResponse
         public string itemName { get; set; }
         public string itemUnit { get; set; }
         public string itemId { get; set; }
+        [XmlElement("itemNumber")]
         public int itemCount { get; set; }
         public decimal itemPrice { get; set; }
         public decimal itemTotalFee { get; set; }

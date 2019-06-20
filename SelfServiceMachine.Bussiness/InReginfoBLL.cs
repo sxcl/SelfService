@@ -24,5 +24,15 @@ namespace SelfServiceMachine.Bussiness
         {
             return iInReginfo.GetList(whereLambda).OrderByDescending(x => x.addtime).FirstOrDefault();
         }
+
+        public object GetOutDate(int inid)
+        {
+            return iInReginfo.GetOutDate(inid);
+        }
+
+        public string GetInCount(string idno)
+        {
+            return iInReginfo.GetInCount(idno);
+        }
     }
 }

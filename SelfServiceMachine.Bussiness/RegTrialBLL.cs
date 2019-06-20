@@ -1,6 +1,7 @@
 ﻿using SelfServiceMachine.Entity;
 using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
+using System;
 using System.Collections.Generic;
 
 namespace SelfServiceMachine.Bussiness
@@ -22,6 +23,11 @@ namespace SelfServiceMachine.Bussiness
         public reg_trial Get(int regid)
         {
             return iRegTrial.Get(x => x.regid == regid);
+        }
+
+        public void Update(reg_trial reg_Trial)
+        {
+            iRegTrial.Update(reg_Trial);
         }
     }
 }

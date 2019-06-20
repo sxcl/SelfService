@@ -7,6 +7,7 @@ using SelfServiceMachine.Bussiness;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity;
 using SelfServiceMachine.Entity.SRequest;
+using SelfServiceMachine.Entity.ViewModels;
 using SelfServiceMachine.Models.Request;
 using SelfServiceMachine.Models.Response;
 using SelfServiceMachine.Utils;
@@ -221,6 +222,11 @@ namespace SelfServiceMachine.Controllers
                 if (pt_Info == null)
                 {
                     pt_Info = ptInfoBLL.GetPt_Info(x => x.cno == orderCurRegInfo.model.patCardNo || x.idno == orderCurRegInfo.model.patCardNo);
+                    if (string.IsNullOrWhiteSpace(pt_Info.yno))
+                    {
+                        pt_Info.yno = orderCurRegInfo.model.SSCardNumber;
+                        ptInfoBLL.Update(pt_Info);
+                    }
                 }
             }
             else
@@ -322,6 +328,7 @@ namespace SelfServiceMachine.Controllers
             {
                 return RsXmlHelper.ResXml(99, "挂号信息为空");
             }
+            payCurReg.model.payMode = CodeConvertUtils.GetChannByCode(Convert.ToInt32(payCurReg.model.payMode));
 
             var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
 
@@ -419,7 +426,7 @@ namespace SelfServiceMachine.Controllers
 
             var reg_Trial = regTrialBLL.Get(Convert.ToInt32(getClinicalTrial.model.hisOrdNum));
             var reg_trialDetails = regTrialdetailBLL.GetList(reg_Trial.id);
-            
+
             var mz001 = new Entity.SRequest.MZ001()
             {
                 akc190 = reg_Trial.akc190,
@@ -468,7 +475,9 @@ namespace SelfServiceMachine.Controllers
                     {
                         resultCode = 0,
                         resultMessage = JsonOperator.JsonSerialize(result.transBody),
-                        SSSerNum = ybSno
+                        SSSerNum = ybSno,
+                        cardArea = result.cardArea,
+                        akc190 = mz001.akc190
                     }
                 });
             }
@@ -492,6 +501,10 @@ namespace SelfServiceMachine.Controllers
             }
 
             var reg_Trial = regTrialBLL.Get(Convert.ToInt32(getRegSettlement.model.hisOrdNum));
+            if (!string.IsNullOrWhiteSpace(reg_Trial.transBody))
+            {
+                return XMLHelper.XmlSerialize(new response<RegSettlement>() { model = new RegSettlement() { resultCode = 0, resultMessage = reg_Trial.transBody, akc190 = reg_Trial.akc190 } });
+            }
             var reg_trialDetails = regTrialdetailBLL.GetList(reg_Trial.id);
 
             MZ002 mZ002 = new MZ002()
@@ -537,9 +550,16 @@ namespace SelfServiceMachine.Controllers
             var verify = getVerifyCodeResult.outParam.Split("|")[0] + "|" + getVerifyCodeResult.outParam.Split("|")[1];
             var result = HealthInsuranceHelper.RegTrial<BaseMedInsurance<Entity.SResponse.MZ002>>("MZ002", version, verify, ybsssno.ToString(), mZ002);
 
-            return result.transReturnCode == "0" || result.transReturnCode == "00000000"
-                ? RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(result.transBody))
-                : RsXmlHelper.ResXml(99, result.transReturnMessage);
+            if (result.transReturnCode == "0" || result.transReturnCode == "00000000")
+            {
+                reg_Trial.transBody = JsonOperator.JsonSerialize(result.transBody);
+                regTrialBLL.Update(reg_Trial);
+                return XMLHelper.XmlSerialize(new response<RegSettlement>() { model = new RegSettlement() { resultCode = 0, resultMessage = JsonOperator.JsonSerialize(result.transBody), akc190 = mZ002.akc190 } });
+            }
+            else
+            {
+                return RsXmlHelper.ResXml(99, result.transReturnMessage);
+            }
         }
 
         /// <summary>

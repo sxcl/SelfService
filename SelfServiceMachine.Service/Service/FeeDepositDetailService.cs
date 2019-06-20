@@ -20,8 +20,9 @@ namespace SelfServiceMachine.Service.Service
                 {
                     branchCode = "",
                     branchName = "",
+                    payAmout = (f.price * 100).ToString(),
                     hisOrdNum = f.detailid.ToString(),
-                    psOrdNum = f.paysn,
+                    agtOrdNum = f.paysn,
                     payMode = f.paytype.ToString(),
                     payStatus = "1",
                     balance = ""
@@ -30,6 +31,7 @@ namespace SelfServiceMachine.Service.Service
             foreach (var item in list)
             {
                 item.hisOrdNum = EString.ZeroFill(item.hisOrdNum);
+                item.receiptNum = EString.ZeroFill(item.hisOrdNum);
                 item.payMode = CodeConvertUtils.GetDepositType(item.payMode);
             }
 

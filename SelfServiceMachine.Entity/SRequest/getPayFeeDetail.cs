@@ -9,6 +9,6 @@
         /// <summary>
         /// 缴费的发票号码
         /// </summary>
-        public string mzFeeIdList { get; set; }
+        public string MzFeeId { get; set; }
     }
 }

@@ -24,35 +24,35 @@ namespace SelfServiceMachine.Entity
            public int id {get;set;}
 
            /// <summary>
-           /// Desc:费用单据号
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
            public string akc190 {get;set;}
 
            /// <summary>
-           /// Desc:费用序列号
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
            public string aaz500 {get;set;}
 
            /// <summary>
-           /// Desc:社保目录编码
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
            public string bzz269 {get;set;}
 
            /// <summary>
-           /// Desc:协议机构内部诊疗目录编码
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
            public string alc005 {get;set;}
 
            /// <summary>
-           /// Desc:协议机构内部诊疗目录名称
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
@@ -91,17 +91,10 @@ namespace SelfServiceMachine.Entity
            /// Default:
            /// Nullable:True
            /// </summary>           
-           public string akc189 {get;set;}
-
-           /// <summary>
-           /// Desc:
-           /// Default:
-           /// Nullable:True
-           /// </summary>           
            public string bke384 {get;set;}
 
            /// <summary>
-           /// Desc:费用单据号
+           /// Desc:
            /// Default:
            /// Nullable:True
            /// </summary>           
@@ -113,6 +106,20 @@ namespace SelfServiceMachine.Entity
            /// Nullable:True
            /// </summary>           
            public int? regid {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string akc189 {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string transBody {get;set;}
 
     }
 }

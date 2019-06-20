@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SelfServiceMachine.Entity.SResponse
+namespace SelfServiceMachine.Entity.ViewModels
 {
-    public class getClinicalTrial
+    public class FeeSettlement
     {
         public int resultCode { get; set; }
         public string resultMessage { get; set; }
-        public string SSSerNum { get; set; }
-        public string cardArea { get; set; }
         public string akc190 { get; set; }
     }
 }

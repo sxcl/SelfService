@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace SelfServiceMachine.Entity.SResponse
@@ -19,5 +20,9 @@ namespace SelfServiceMachine.Entity.SResponse
         public string patName { get; set; }
         public string deptName { get; set; }
         public string doctorName { get; set; }
+        public string idCard { get; set; }
+        public string inTime { get; set; }
+        public string outDate { get; set; }
+        public string patiId { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using SelfServiceMachine.Bussiness.Ivf;
 using SelfServiceMachine.Common;
 using SelfServiceMachine.Entity;
 using SelfServiceMachine.Entity.SRequest;
+using SelfServiceMachine.Entity.ViewModels;
 using SelfServiceMachine.Models.Request;
 using SelfServiceMachine.Models.Response;
 using SelfServiceMachine.Utils;
@@ -373,7 +374,7 @@ namespace SelfServiceMachine.Controllers
                 return RsXmlHelper.ResXml(-1, "XML个数错误");
             }
 
-            var itemList = feeInfodetailBLL.GetPayFeeDetailItems(Convert.ToInt32(getPayFeeDetail.model.mzFeeIdList));
+            var itemList = feeInfodetailBLL.GetPayFeeDetailItems(Convert.ToInt32(getPayFeeDetail.model.MzFeeId));
 
             if (itemList != null && itemList.Count > 0)
             {
@@ -461,7 +462,6 @@ namespace SelfServiceMachine.Controllers
                 else
                 {
                     var commFee = new comm_fee();
-                    //commFeeBLL.GetComm_Fee_Views(Convert.ToInt32(order_Feedetail.itemid)).FirstOrDefault();
                     var isPackage = commFeeBLL.IsPackage(x => x.itemid == order_Feedetail.itemid && x.costtype == "5");
                     if (isPackage)
                     {
@@ -540,7 +540,6 @@ namespace SelfServiceMachine.Controllers
                     bke384 = fY004.bke384
                 });
 
-                //return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(result.transBody));
                 return XMLHelper.XmlSerialize(new response<Entity.SResponse.getMZInsurance>()
                 {
 
@@ -564,6 +563,8 @@ namespace SelfServiceMachine.Controllers
                         medicareAmount = result.transBody.akb068.ToString(),
                         insuranceAmout = (result.transBody.akb068 + result.transBody.akb066).ToString(),
                         totalAmout = result.transBody.akc264.ToString(),
+                        akc190 = fY004.akc190,
+                        cardArea = result.cardArea,
                         SSInfoNew = JsonOperator.JsonSerialize(result.transBody)
                     }
                 });
@@ -613,6 +614,19 @@ namespace SelfServiceMachine.Controllers
             var ybsssno = commKeyBLL.GetYBNO();
 
             var FeeTrail = feeTrialBLL.Get(x => x.bke384 == settleMZInsurance.model.SSSerNo);
+            if (FeeTrail == null && !string.IsNullOrWhiteSpace(FeeTrail.transBody))
+            {
+                //return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(FeeTrail.transBody));
+                return XMLHelper.XmlSerialize(new response<FeeSettlement>()
+                {
+                    model = new FeeSettlement()
+                    {
+                        resultCode = 0,
+                        resultMessage = FeeTrail.transBody,
+                        akc190 = FeeTrail.akc190
+                    }
+                });
+            }
             FY005 fY005 = new FY005()
             {
                 aaz500 = settleMZInsurance.model.socialSecurityNo,
@@ -656,9 +670,18 @@ namespace SelfServiceMachine.Controllers
                     payType = "医保",
                     payAmount = result.transBody.akb067.ToString(),
                     totalAmout = orderInfoList.Sum(x => x.totprice).ToString(),
+                    akc190 = fY005.akc190,
                     SSInfoNew = JsonOperator.JsonSerialize(result.transBody)
                 };
-                return RsXmlHelper.ResXml(0, JsonOperator.JsonSerialize(result.transBody));
+                return XMLHelper.XmlSerialize(new response<FeeSettlement>()
+                {
+                    model = new FeeSettlement()
+                    {
+                        resultCode = 0,
+                        resultMessage = JsonOperator.JsonSerialize(result.transBody),
+                        akc190 = fY005.akc190
+                    }
+                });
             }
             else
             {

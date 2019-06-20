@@ -235,9 +235,13 @@ namespace SelfServiceMachine.Controllers
                             patientID = inReginfo.inid.ToString(),
                             admissionNo = inReginfo.inno,
                             inDate = inReginfo.intime.ToString(),
+                            inTime = inReginfoBLL.GetInCount(inReginfo.idno),
                             patName = inReginfo.pname,
                             deptName = inReginfo.indept,
-                            doctorName = inReginfo.resident
+                            doctorName = inReginfo.resident,
+                            idCard = inReginfo.idno,
+                            outDate = inReginfoBLL.GetOutDate(inReginfo.inid).ToString(),
+                            patiId = inReginfo.pid.ToString()
                         }
                     }
                 }

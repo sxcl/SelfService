@@ -1,4 +1,7 @@
-﻿using SqlSugar;
+﻿using System;
+using System.Linq;
+using System.Text;
+using SqlSugar;
 
 namespace SelfServiceMachine.Entity
 {
@@ -88,6 +91,13 @@ namespace SelfServiceMachine.Entity
            /// Nullable:True
            /// </summary>           
            public string bke384 {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public string transBody {get;set;}
 
     }
 }
