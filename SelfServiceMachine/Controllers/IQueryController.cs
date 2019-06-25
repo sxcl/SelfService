@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SelfServiceMachine.Bussiness;
+using SelfServiceMachine.Common;
+using SelfServiceMachine.Models.Request;
+using SelfServiceMachine.Models.Response;
+using SelfServiceMachine.Utils;
 
 namespace SelfServiceMachine.Controllers
 {
@@ -33,9 +32,23 @@ namespace SelfServiceMachine.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("getBillInfos")]
-        public string GetBillInfos()
+        public string GetBillInfos(request<Entity.SRequest.getBillInfos> getBill)
         {
-            return null;
+            if (getBill == null)
+            {
+                return RsXmlHelper.ResXml(-1, "XML格式错误");
+            }
+
+            return XMLHelper.XmlSerialize(new response<Entity.SResponse.getBillInfos>()
+            {
+                model = new Entity.SResponse.getBillInfos()
+                {
+                    resultCode = 0,
+                    resultMessage = "",
+                    item = feeinfoBLL.getBillInfos(getBill.model.billDate, getBill.model.payMode, getBill.model.pageNo, getBill.model.pageNumber)
+                }
+            });
+
         }
     }
 }

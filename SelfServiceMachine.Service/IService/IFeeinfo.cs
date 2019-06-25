@@ -10,5 +10,6 @@ namespace SelfServiceMachine.Service.IService
         fee_info GetFee_InfoByRegTrial(int feeid);
         bool DeleteFeeinfo(int regid, string sno);
         List<Entity.SResponse.getPayItem> GetPayItems(int pid);
+        List<Entity.SResponse.BillInfoItem> getBillInfos(string billDate, int paymodel, int pageNo, int pageNumber);
     }
 }

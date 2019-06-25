@@ -5,6 +5,8 @@ using SelfServiceMachine.Models.Request;
 using SelfServiceMachine.Models.Response;
 using SelfServiceMachine.Utils;
 using SelfServiceMachine.Entity.SRequest;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
 
 namespace SelfServiceMachine.Controllers
 {
@@ -31,7 +33,7 @@ namespace SelfServiceMachine.Controllers
         /// <summary>
         /// 构造函数
         /// </summary>
-        public RegistrationController()
+        public RegistrationController(IMemoryCache memoryCache)
         {
             sysDeptBLL = new SysDeptBLL();
             SysUserinfoBLL = new SysUserinfoBLL();
@@ -50,8 +52,9 @@ namespace SelfServiceMachine.Controllers
             {
                 return RsXmlHelper.ResXml("-1", "XML格式错误");
             }
+            List<Entity.SResponse.GDeptItem> deptItems = null;
+            deptItems = sysDeptBLL.GetGDeptItems(getRegDepts.model.parentDeptCode);
 
-            var deptItems = sysDeptBLL.GetGDeptItems(getRegDepts.model.parentDeptCode);
             if (deptItems.Count > 0)
             {
                 return XMLHelper.XmlSerialize(new response<Entity.SResponse.getRegDepts>()

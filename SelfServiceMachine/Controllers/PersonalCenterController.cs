@@ -163,12 +163,6 @@ namespace SelfServiceMachine.Controllers
         [HttpPost("bindCard")]
         public string BindCard([FromBody]request<BindCard> bindCard)
         {
-            //if (string.IsNullOrWhiteSpace(bindCardXML))
-            //{
-            //    return RsXmlHelper.ResXml(-1, "XML不能为空");
-            //}
-
-            //var bindCard = XMLHelper.DESerializer<request<BindCard>>(bindCardXML);
             if (bindCard == null)
             {
                 return RsXmlHelper.ResXml(-1, "XML格式错误");

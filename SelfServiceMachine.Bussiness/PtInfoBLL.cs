@@ -26,7 +26,7 @@ namespace SelfServiceMachine.Bussiness
                     pt_Info = IPtInfo.Get(x => x.yno == patCardNo);
                     break;
                 case 3:
-                    pt_Info = IPtInfo.Get(x => x.ybidentity == patCardNo);
+                    pt_Info = IPtInfo.Get(x => x.yno == patCardNo);
                     break;
                 case 5:
                     pt_Info = IPtInfo.Get(patCardNo);

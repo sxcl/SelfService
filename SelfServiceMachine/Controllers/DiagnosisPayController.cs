@@ -415,7 +415,7 @@ namespace SelfServiceMachine.Controllers
             var dept = sysDeptBLL.GetDeptByCode(getMZInsurance.model.deptCode);
             var doctor = sysUserinfoBLL.GetRDoctor(getMZInsurance.model.doctorCode);
 
-            var regInfo = reginfoBLL.Get(x => x.doctor == doctor.username && x.dept == dept.name && x.pid == ptInfo.pid && x.regid == Convert.ToInt32(getMZInsurance.model.mzFeeId));
+            var regInfo = reginfoBLL.Get(x => x.regid == Convert.ToInt32(getMZInsurance.model.mzFeeId));
             if (regInfo == null)
             {
                 return RsXmlHelper.ResXml(-1, "挂号信息为空");

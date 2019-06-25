@@ -15,7 +15,7 @@ namespace SelfServiceMachine.Service.Service
 
         public List<Entity.SResponse.DeptRegItem> GetReg_arrange(string dept, string beginDate, string endDate)
         {
-            var query = "select r.bookdate as scheduleDate,COUNT(r.argid) as totalNum,SUM(case when r.regno = 0 then 1 else 0 end) as leftNum from reg_arrange r WITH(NOLOCK) where r.dept = @dept and DATEDIFF(DAY,bookdate,@beginDate) <= 0 and DATEDIFF(DAY,bookdate,@endDate) >= 0 group by r.bookdate,r.mgrid";
+            var query = "select r.bookdate as scheduleDate,COUNT(r.argid) as totalNum,SUM(case when r.regno = 0 then 1 else 0 end) as leftNum from reg_arrange r WITH(NOLOCK) where r.dept = @dept and DATEDIFF(DAY,bookdate,@beginDate) <= 0 and DATEDIFF(DAY,bookdate,@endDate) >= 0 and r.booktime2 > (Select CONVERT(varchar(100), GETDATE(), 108)) and r.del = 0 group by r.bookdate,r.mgrid order by scheduleDate desc";
 
             return db.Ado.SqlQuery<Entity.SResponse.DeptRegItem>(query, new { dept, beginDate, endDate });
         }

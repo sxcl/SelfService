@@ -7,8 +7,8 @@ namespace SelfServiceMachine.Entity.SRequest
     {
         public string branchCode { get; set; }
         public string billDate { get; set; }
-        public string payMode { get; set; }
-        public string pageNo { get; set; }
-        public string pageNumber { get; set; }
+        public int payMode { get; set; }
+        public int pageNo { get; set; }
+        public int pageNumber { get; set; }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using SelfServiceMachine.Entity;
-using SelfServiceMachine.Entity.Insurance;
-using SelfServiceMachine.Entity.SlefServiceModels;
+using SelfServiceMachine.Entity.SRequest;
+using SelfServiceMachine.Entity.SResponse;
 using SelfServiceMachine.Service.IService;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using MZ001 = SelfServiceMachine.Entity.Insurance.MZ001;
 
 namespace SelfServiceMachine.Service.Service
 {
@@ -44,6 +45,33 @@ namespace SelfServiceMachine.Service.Service
             var query = "select null as branchCode,f.feeid as hisOrdNum,null as branchName,f.regid as mzFeeIdList,f.addtime as payTime,f.status as payStatus,null as itemType,f.amountcol as ItemTotal,null as payType,f.amountcol as payAmout,f.amountcol as totalAmout,null as hisMessage,null as socialInsurance,0 as restsAmount,o.dept as deptName from fee_info f left join reg_info r on r.regid = f.regid left join fee_infodetail fd on f.feeid = fd.feeid left join order_info o on fd.billid = o.billid where f.status = 0 and f.pid = @pid and fd.billid != 0 group by f.feeid,f.regid,f.addtime,f.status,f.amountcol,o.dept order by f.addtime desc";
 
             return db.Ado.SqlQuery<Entity.SResponse.getPayItem>(query, new SugarParameter("@pid", pid));
+        }
+
+        public List<BillInfoItem> getBillInfos(string billDate, int paymodel, int pageNo, int pageNumber)
+        {
+            int index = (pageNo - 1) * pageNumber;
+            int size = pageNo * pageNumber;
+
+            var paychnn = "";
+            switch (paymodel)
+            {
+                case 0:
+                    paychnn = "";
+                    break;
+                case 1:
+                    paychnn = "wechat";
+                    break;
+                case 2:
+                    paychnn = "alipay";
+                    break;
+                default:
+                    paychnn = "";
+                    break;
+            }
+
+            var query = "select * from (select *,ROW_NUMBER() OVER(order by payTime desc) as RowIndex from (select fc.chnnsno as agtOrdNum,f.sno as psOrdNum,(case f.status when 0 then 1 when 1 then 2 else 1 end) as orderType,(case fc.chnn when 'wechat' then 'WXPay' when 'alipay' then 'ZFBPay' else '' end) as payMode,(f.amountcol*100) as payAmt,f.addtime as payTime,(case f.ftype when 0 then 2 when 1 then 3 when 2 then 1 when 3 then 6 else 2 end) as feeType from fee_info f left join fee_channel fc on f.feeid = fc.feeid where fc.chnn like '%" + paychnn + "%' and DATEDIFF(DAY,addtime,'" + billDate + "') = 0 union select f.paysn as agtOrdNum,f.paysn as psOrdNum,case f.type when '预交金收费' then 1 else 2 end as orderType,(case f.paytype when 'wechat' then 'WXPay' when 'alipay' then 'ZFBPay' else '' end) as payMode,(f.price*100) as payAmt,f.addtime as payTime,3 as feeType from fee_depositdetail f where f.paytype like '%" + paychnn + "%' and DATEDIFF(DAY,addtime,'" + billDate + "') = 0) as t) as temp where temp.RowIndex between " + index + " and " + size + "";
+
+            return db.Ado.SqlQuery<BillInfoItem>(query);
         }
     }
 }

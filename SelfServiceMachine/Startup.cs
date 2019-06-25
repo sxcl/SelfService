@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using SelfServiceMachine.Filter;
 using SelfServiceMachine.SwaggerHelp;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -43,6 +42,8 @@ namespace SelfServiceMachine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddMemoryCache();
 
             #region Swagger
             services.AddSwaggerGen(c =>

@@ -1,5 +1,6 @@
 ﻿using SelfServiceMachine.Entity;
 using SelfServiceMachine.Entity.Insurance;
+using SelfServiceMachine.Entity.SRequest;
 using SelfServiceMachine.Service.IService;
 using SelfServiceMachine.Service.Service;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using MZ001 = SelfServiceMachine.Entity.Insurance.MZ001;
 
 namespace SelfServiceMachine.Bussiness
 {
@@ -131,6 +133,11 @@ namespace SelfServiceMachine.Bussiness
         public fee_info Get(Expression<Func<fee_info, bool>> whereLambda)
         {
             return iFeeinfo.Get(whereLambda);
+        }
+
+        public List<Entity.SResponse.BillInfoItem> getBillInfos(string billDate, int payMode, int pageNo, int pageNumber)
+        {
+            return iFeeinfo.getBillInfos(billDate, payMode, pageNo, pageNumber);
         }
     }
 }

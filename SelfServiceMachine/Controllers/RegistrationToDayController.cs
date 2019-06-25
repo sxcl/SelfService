@@ -328,7 +328,14 @@ namespace SelfServiceMachine.Controllers
             {
                 return RsXmlHelper.ResXml(99, "挂号信息为空");
             }
-            payCurReg.model.payMode = CodeConvertUtils.GetChannByCode(Convert.ToInt32(payCurReg.model.payMode));
+            try
+            {
+                payCurReg.model.payMode = CodeConvertUtils.GetChannByCode(Convert.ToInt32(payCurReg.model.payMode));
+            }
+            catch
+            {
+                payCurReg.model.payMode = payCurReg.model.payMode;
+            }
 
             var fee_info = feeinfoBLL.GetFee_InfoByRegInfo(Convert.ToInt32(payCurReg.model.hisOrdNum));
 
